@@ -20,7 +20,7 @@ namespace BeatSaber_All_Songs_Downloader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string _folderBasePath;
+        private string _folderBasePath = @"R:\BeatSaber Songs";
         private PageResult _songs;
 
         public MainWindow()
@@ -117,7 +117,7 @@ namespace BeatSaber_All_Songs_Downloader
             int i = 0;
             int max = await downloader.GetTotalCountOfSongsAsync();
             var keepGoing = true;
-            var threadCount = 1;
+            var threadCount = 0;
             var maxThreads = int.Parse(numberOfSongs);
             DisableButtons();
 
@@ -158,14 +158,27 @@ namespace BeatSaber_All_Songs_Downloader
             while (keepGoing)
             {
                 var start = i;
-                var count = start + songsPerthread > (max - 1) ? songsPerthread - (max - 1 - i) : songsPerthread;
-                i += songsPerthread;
+                var count = 0;
+                if (start + songsPerthread > (max - 1) && (max - 1 - i) > 0)
+                {
+                    count = songsPerthread - (max - 1 - i);
+                }
+                else if (start + songsPerthread > (max - 1)) 
+                {
+                    count = 1;
+                } 
+                else 
+                {
+                    count = songsPerthread;
+                }
+
+                i += count;
                 new Thread(async () =>
                 {
                     await downloader.DownloadAllForRangeAsync(_folderBasePath, this, _songs.docs.GetRange(start, count));
 
                 }).Start();
-                if (i > max)
+                if (i >= max)
                 {
                     keepGoing = false;
                 }

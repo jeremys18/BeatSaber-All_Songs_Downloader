@@ -39,6 +39,7 @@ namespace BeatSaber_All_Songs_Downloader
                     {
                         using (WebClient wc = new WebClient())
                         {
+                            wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
                             wc.DownloadFile($"{_consts.beatSaverBaseUrl}/{song.directDownload}", fileName);
                         }
 
@@ -89,6 +90,7 @@ namespace BeatSaber_All_Songs_Downloader
         internal async Task<PageResult> GetAllSongInfoAsync(MainWindow mainWindow)
         {
             var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
             var response = await client.GetAsync($"{_consts.pageBaseUrl}/1");
             var json = await response.Content.ReadAsStringAsync();
             var info = JsonConvert.DeserializeObject<PageResult>(json);
@@ -127,6 +129,7 @@ namespace BeatSaber_All_Songs_Downloader
         internal async Task<int> GetTotalCountOfSongsAsync()
         {
             var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
             var response = await client.GetAsync($"{_consts.pageBaseUrl}/1");
             var json = await response.Content.ReadAsStringAsync();
             var info = JsonConvert.DeserializeObject<PageResult>(json);
