@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Beat_Saber_All_Songs_Downloader.Models
@@ -25,10 +26,11 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public virtual Metadata metadata { get; set; }
         public virtual Stats stats { get; set; }
 
-        public override bool Equals(object obj)
+
+        public override string ToString()
         {
-            if (obj == null || !(obj is Song)) return base.Equals(obj);
-            return _id == ((Song)obj)._id;
+            var item = $"{metadata.songName} - {metadata.songAuthorName}";
+            return item;
         }
     }
 }

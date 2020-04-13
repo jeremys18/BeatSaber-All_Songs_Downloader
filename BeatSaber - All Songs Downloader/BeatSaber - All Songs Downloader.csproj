@@ -75,11 +75,15 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="DB\BeatSaverContext.cs" />
+    <Compile Include="DB\BeatSaverRepo.cs" />
+    <Compile Include="Helpers\BeatSaverDbHelper.cs" />
+    <Compile Include="Helpers\FileHelper.cs" />
     <Compile Include="Models\Characteristics.cs" />
     <Compile Include="Models\Difficulties.cs" />
     <Compile Include="Models\Difficulties2.cs" />
     <Compile Include="Models\DifficultyInfo.cs" />
     <Compile Include="Models\Stats.cs" />
+    <Compile Include="SongComparer.cs" />
     <Compile Include="TextHandler.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

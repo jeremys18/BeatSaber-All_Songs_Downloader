@@ -20,7 +20,7 @@ namespace BeatSaber_All_Songs_Downloader
             _consts = new Consts();
         }
 
-        public async Task DownloadAllForRangeAsync(string songFolderBasePath, MainWindow mainWindow, System.Collections.Generic.List<Song> docs)
+        public async Task DownloadAllForRangeAsync(string songFolderBasePath, MainWindow mainWindow, List<Song> docs)
         {
             _mainWindow = mainWindow;
             var retrySongs = new List<Song>();

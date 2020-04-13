@@ -1,7 +1,7 @@
 ﻿using Beat_Saber_All_Songs_Downloader.Models;
 using System.Data.Entity;
 
-namespace BeatSaber___All_Songs_Downloader.DB
+namespace BeatSaber_All_Songs_Downloader.DB
 {
     class BeatSaverContext : DbContext
     {
