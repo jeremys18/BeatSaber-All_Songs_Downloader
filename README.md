@@ -3,6 +3,8 @@ Downloads all BeatSaber songs from BeatSaver.com
 
 Yes, I know, it's very non-flashy flashy. But this was designed for myself and I don't need flashy flashy. I don't actually think anyone else will use it, so if you're downloading this then I guess I was wrong. lol.
 
+If you run into issue please open a new issue here. If you have any suggestions on how to make this better or things you'd like to see, open an issue here as well. I will look at them when I can.
+
 
 # How to Use
 
@@ -65,4 +67,4 @@ If this isn't your first run then you can uncheck the download box. If you do th
 
 If you check the download box then it will grab the latest list from the server then proceed to download ONLY the songs you don't already have downloaded.
 
-If you first checked for new songs using the check for new songs button THEN dhit this button, it will NOT check the server again for the latest list of songs as it already did that when you got the list of new songs. Instead it will ONLY download the songs listed in the New Songs list on the left. This saves you from waiting all over for it to get the list of songs from the server (it already knows the latest list).
+If you first checked for new songs using the check for new songs button THEN hit this button, it will NOT check the server again for the latest list of songs as it already did that when you got the list of new songs. Instead it will ONLY download the songs listed in the New Songs list on the left. This saves you from waiting all over for it to get the list of songs from the server (it already knows the latest list).
