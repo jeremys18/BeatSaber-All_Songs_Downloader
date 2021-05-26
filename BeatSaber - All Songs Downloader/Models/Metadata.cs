@@ -14,6 +14,7 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public double bpm { get; set; }
         public int duration { get; set; }
         public int difficultiesId { get; set; }
+        public string automapper { get; set; }
 
         public virtual Difficulties difficulties { get;set;}
         public virtual List<Characteristic> characteristics { get; set; }

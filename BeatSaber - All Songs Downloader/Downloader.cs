@@ -1,8 +1,11 @@
 ﻿using Beat_Saber_All_Songs_Downloader.Models;
+using BeatSaber___All_Songs_Downloader;
+using BeatSaber___All_Songs_Downloader.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -13,12 +16,6 @@ namespace BeatSaber_All_Songs_Downloader
     public class Downloader
     {
         private MainWindow _mainWindow;
-        private Consts _consts;
-
-        public Downloader()
-        {
-            _consts = new Consts();
-        }
 
         public async Task DownloadAllForRangeAsync(string songFolderBasePath, MainWindow mainWindow, List<Song> docs)
         {
@@ -39,8 +36,10 @@ namespace BeatSaber_All_Songs_Downloader
                     {
                         using (WebClient wc = new WebClient())
                         {
-                            wc.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
-                            wc.DownloadFile($"{_consts.beatSaverBaseUrl}/{song.directDownload}", fileName);
+                            wc.Headers.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
+                            wc.Headers.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
+                            wc.Headers.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
+                            wc.DownloadFile($"{Consts.BeatSaverBaseUrl}{song.directDownload}", fileName);
                         }
 
                         if (!File.Exists(fileName))
@@ -87,12 +86,39 @@ namespace BeatSaber_All_Songs_Downloader
             mainWindow.UpdateTextBox("\nCompleted a thread");
         }
 
-        internal async Task<PageResult> GetAllSongInfoAsync(MainWindow mainWindow)
+        internal async Task<PageResult> GetAllSongInfoForAllFiltersAsync(MainWindow mainWindow)
+        {
+            PageResult responce = null;
+            foreach(var filter in Consts.FilterOptions)
+            {
+                mainWindow.UpdateTextBox($"\nGetting songs by {filter}....\n\n");
+                var songData = await GetAllSongInfoAsync(mainWindow, filter);
+                if(responce == null)
+                {
+                    responce = songData;
+                }
+                else
+                {
+                    var newSongs = songData.docs.Except(responce.docs, new SongComparer());
+                    responce.docs.AddRange(newSongs);
+                    responce.totalDocs += newSongs.Count();
+                }
+            }
+
+            return responce;
+        }
+
+
+        internal async Task<PageResult> GetAllSongInfoAsync(MainWindow mainWindow, string filterValue)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
-            var response = await client.GetAsync($"{_consts.pageBaseUrl}/1");
-            var json = await response.Content.ReadAsStringAsync();
+            client.DefaultRequestHeaders.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
+            client.DefaultRequestHeaders.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
+            client.DefaultRequestHeaders.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
+            client.BaseAddress = new Uri(Consts.PageBaseUrl);
+            var urlToUse = new Uri($"{filterValue}/0?automapper=1", UriKind.Relative);
+            var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, urlToUse)).ConfigureAwait(false);
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var info = JsonConvert.DeserializeObject<PageResult>(json);
             var pageCount = (info.totalDocs % info.docs.Count) == 0 ? (info.totalDocs / info.docs.Count) : (info.totalDocs / info.docs.Count) + 1;
 
@@ -100,17 +126,19 @@ namespace BeatSaber_All_Songs_Downloader
             {
                 try
                 {
-                    response = await client.GetAsync($"{_consts.pageBaseUrl}/{i}");
+                    response = await client.GetAsync($"{filterValue}/{i}");
                     json = await response.Content.ReadAsStringAsync();
                     var info2 = JsonConvert.DeserializeObject<PageResult>(json);
                     info.docs.AddRange(info2.docs);
+                    Thread.Sleep(334);// Rate limits only allow 90 requests per 30 seconds or it will kick us. That means we have a max of 3 requests a second... so every 334 mili seconds
                 }
                 catch (Exception e)
                 {
-                    if(json.ToLower().Contains("rate limit"))
+                    var serverResponse = JsonConvert.DeserializeObject<BeatSaverServerResponseModel>(json);
+                    if(serverResponse.Code == 5)
                     {
-                        int seconds = 20;
-                        mainWindow.UpdateTextBox($"\nRate limit Exceeded. Will continue in 20 seconds. Got {i} out of {pageCount}....");
+                        int seconds = (serverResponse.ResetAfter/1000) + 1; // Add one to account for less than 1 and rounding
+                        mainWindow.UpdateTextBox($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i} out of {pageCount} pages....");
                         i--;
                         Thread.Sleep(seconds * 1000);
                     }
@@ -121,7 +149,7 @@ namespace BeatSaber_All_Songs_Downloader
                 }
             }
 
-
+            client.Dispose();
             return info;
         }
 
@@ -130,7 +158,7 @@ namespace BeatSaber_All_Songs_Downloader
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
-            var response = await client.GetAsync($"{_consts.pageBaseUrl}/1");
+            var response = await client.GetAsync($"{Consts.PageBaseUrl}/1");
             var json = await response.Content.ReadAsStringAsync();
             var info = JsonConvert.DeserializeObject<PageResult>(json);
             return info.totalDocs;
