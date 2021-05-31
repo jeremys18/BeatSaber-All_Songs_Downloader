@@ -82,7 +82,7 @@ namespace BeatSaber_All_Songs_Downloader
                 var knownSongs = _songs;
                 var source = useDb ? "database" : "computer";
                 UpdateTextBox($"\nGot songs from {source}. Getting latest list of songs from server. This could take awhile....");
-                _songs = await new Downloader().GetAllSongInfoAsync(this);
+                _songs = await new Downloader().GetAllSongInfoForAllFiltersAsync(this);
                 var newSongs = _songs.docs.Except(knownSongs.docs, new SongComparer());
                 foreach (var song in newSongs)
                 {
@@ -137,7 +137,7 @@ namespace BeatSaber_All_Songs_Downloader
                 UpdateTextBox($"\nGetting songs from {dataSource}......");
                 var knownSongs = useDb ? GetSongsFromDb() : FileHelper.GetPageResultFromFile();
                 UpdateTextBox("\nDownloading song info for every song from server. This will take awhile. Go get a snack...........");
-                _songs = await downloader.GetAllSongInfoAsync(this);
+                _songs = await downloader.GetAllSongInfoForAllFiltersAsync(this);
                 var songsToAdd = _songs.docs.Except(knownSongs.docs, new SongComparer()).ToList();
                 foreach (var s in songsToAdd)
                 {
