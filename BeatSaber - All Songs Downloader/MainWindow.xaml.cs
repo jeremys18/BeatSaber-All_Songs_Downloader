@@ -166,7 +166,7 @@ namespace BeatSaber_All_Songs_Downloader
 
                 _songs = GetMissingSongs();
 
-                UpdateTextBox($"\nFound {_songs.docs.Count} songs not downloaded. Will now download  all mmissing songs....");
+                UpdateTextBox($"\nFound {_songs.docs.Count} songs not downloaded. Will now download  all missing songs....");
             }
 
             max = _songs.docs.Count;
