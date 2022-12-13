@@ -24,53 +24,56 @@ namespace BeatSaber_All_Songs_Downloader
             var numberOfExistingSongs = 0;
             foreach (var song in docs) 
             {
-                try
-                {  
-                    var fileName = TextHandler.GetValidFileName(songFolderBasePath, song);
-
-                    if (File.Exists(fileName))
-                    {
-                        numberOfExistingSongs++;
-                    }
-                    else
-                    {
-                        using (WebClient wc = new WebClient())
-                        {
-                            wc.Headers.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
-                            wc.Headers.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
-                            wc.Headers.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
-                            wc.DownloadFile($"{Consts.BeatSaverBaseUrl}{song.directDownload}", fileName);
-                        }
-
-                        if (!File.Exists(fileName))
-                        {
-                            mainWindow.UpdateTextBox($"\nCould not download file {fileName}. Will try again....");
-                        }
-                    }
-                }
-                catch (WebException e)
+                foreach (var ver in song.versions)
                 {
-                    var resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd().ToLower();
-                    var code = ((HttpWebResponse)e.Response).StatusCode;
-                    if (code == HttpStatusCode.NotFound)
+                    try
                     {
-                        mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
-                        mainWindow.AddSongToErrorList(song);
+                        var fileName = TextHandler.GetValidFileName(songFolderBasePath, song);
+
+                        if (File.Exists(fileName))
+                        {
+                            numberOfExistingSongs++;
+                        }
+                        else
+                        {
+                            using (WebClient wc = new WebClient())
+                            {
+                                wc.Headers.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
+                                wc.Headers.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
+                                wc.Headers.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
+                                wc.DownloadFile(ver.downloadURL, fileName);
+                            }
+
+                            if (!File.Exists(fileName))
+                            {
+                                mainWindow.UpdateTextBox($"\nCould not download file {fileName}. Will try again....");
+                            }
+                        }
                     }
-                    else if (resp.Contains("rate limit"))
+                    catch (WebException e)
                     {
-                        mainWindow.UpdateTextBox($"\n\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
-                        Thread.Sleep(20000);
-                        retrySongs.Add(song);
-                    }
-                    else if(code != HttpStatusCode.Forbidden && e.Status != WebExceptionStatus.ConnectFailure)
-                    {
-                        retrySongs.Add(song);
-                    }
-                    else
-                    {
-                        mainWindow.UpdateTextBox($"\n\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
-                        mainWindow.AddSongToErrorList(song);
+                        var resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd().ToLower();
+                        var code = ((HttpWebResponse)e.Response).StatusCode;
+                        if (code == HttpStatusCode.NotFound)
+                        {
+                            mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
+                            mainWindow.AddSongToErrorList(song);
+                        }
+                        else if (resp.Contains("rate limit"))
+                        {
+                            mainWindow.UpdateTextBox($"\n\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
+                            Thread.Sleep(20000);
+                            retrySongs.Add(song);
+                        }
+                        else if (code != HttpStatusCode.Forbidden && e.Status != WebExceptionStatus.ConnectFailure)
+                        {
+                            retrySongs.Add(song);
+                        }
+                        else
+                        {
+                            mainWindow.UpdateTextBox($"\n\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
+                            mainWindow.AddSongToErrorList(song);
+                        }
                     }
                 }
             }
@@ -101,7 +104,6 @@ namespace BeatSaber_All_Songs_Downloader
                 {
                     var newSongs = songData.docs.Except(responce.docs, new SongComparer());
                     responce.docs.AddRange(newSongs);
-                    responce.totalDocs += newSongs.Count();
                 }
             }
 
@@ -115,21 +117,31 @@ namespace BeatSaber_All_Songs_Downloader
             client.DefaultRequestHeaders.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
             client.DefaultRequestHeaders.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
             client.DefaultRequestHeaders.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
-            client.BaseAddress = new Uri(Consts.PageBaseUrl);
-            var urlToUse = new Uri($"{filterValue}/0?automapper=1", UriKind.Relative);
+
+            var urlToUse = new Uri($"https://beatsaver.com/api/search/text/0?sortOrder={filterValue}", UriKind.Absolute);
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, urlToUse)).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             var info = JsonConvert.DeserializeObject<PageResult>(json);
-            var pageCount = (info.totalDocs % info.docs.Count) == 0 ? (info.totalDocs / info.docs.Count) : (info.totalDocs / info.docs.Count) + 1;
+            var keepgoing = true;
 
-            for (int i = 1; i <= pageCount; i++)
+            for (int i = 1; keepgoing; i++)
             {
                 try
                 {
-                    response = await client.GetAsync($"{filterValue}/{i}");
+                    var urlToUseNow = new Uri($"https://beatsaver.com/api/search/text/{i}?sortOrder={filterValue}", UriKind.Absolute);
+                    response = await client.GetAsync(urlToUseNow);
                     json = await response.Content.ReadAsStringAsync();
                     var info2 = JsonConvert.DeserializeObject<PageResult>(json);
-                    info.docs.AddRange(info2.docs);
+                    if(info2.docs  == null || info2.docs.Count == 0)
+                    {
+                        // we've reached the end of the list so stop the loop
+                        keepgoing = false;
+                    }
+                    else
+                    {
+                        info.docs.AddRange(info2.docs);
+                    }
+                    
                     Thread.Sleep(334);// Rate limits only allow 90 requests per 30 seconds or it will kick us. That means we have a max of 3 requests a second... so every 334 mili seconds
                 }
                 catch (Exception e)
@@ -138,7 +150,7 @@ namespace BeatSaber_All_Songs_Downloader
                     if(serverResponse.Code == 5)
                     {
                         int seconds = (serverResponse.ResetAfter/1000) + 1; // Add one to account for less than 1 and rounding
-                        mainWindow.UpdateTextBox($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i} out of {pageCount} pages....");
+                        mainWindow.UpdateTextBox($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i + 1} pages so far....");
                         i--;
                         Thread.Sleep(seconds * 1000);
                     }
@@ -151,17 +163,6 @@ namespace BeatSaber_All_Songs_Downloader
 
             client.Dispose();
             return info;
-        }
-
-
-        internal async Task<int> GetTotalCountOfSongsAsync()
-        {
-            var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.163 Safari/537.36");
-            var response = await client.GetAsync($"{Consts.PageBaseUrl}/1");
-            var json = await response.Content.ReadAsStringAsync();
-            var info = JsonConvert.DeserializeObject<PageResult>(json);
-            return info.totalDocs;
         }
     }
 }

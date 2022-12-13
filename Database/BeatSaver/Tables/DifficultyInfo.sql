@@ -1,15 +1,25 @@
 ﻿CREATE TABLE [dbo].[DifficultyInfo](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[duration] [decimal](9, 4) NOT NULL,
-	[length] [int] NOT NULL,
-	[bombs] [int] NOT NULL,
+	[Id] [int] PRIMARY KEY IDENTITY(1,1) NOT NULL,
+	[njs] DECIMAL(18, 6) NOT NULL,
+	[offset] DECIMAL(18, 6) NOT NULL,
 	[notes] [int] NOT NULL,
+	[bombs] [int] not null,
 	[obstacles] [int] NOT NULL,
-	[njs] [decimal](18, 6) NOT NULL,
-	[njsOffset] [decimal](18, 17) NOT NULL,
- CONSTRAINT [PK_DifficultyInfo] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY]
+	[nps] [decimal](18, 6) NOT NULL,
+	[length] [decimal](18, 17) NOT NULL,
+	[characteristic] NVARCHAR(250) NOT NULL, 
+    [difficulty] NVARCHAR(100) NOT NULL, 
+    [events] INT NOT NULL, 
+    [chroma] INT NOT NULL, 
+    [me] BIT NOT NULL, 
+    [ne] BIT NOT NULL, 
+    [cinema] BIT NOT NULL, 
+    [seconds] DECIMAL(18, 6) NOT NULL, 
+    [maxScore] INT NOT NULL,
+	[paritySummaryId] INT NOT NULL,
+	[versionid] int not null,
+	
+	constraint diff_parity foreign key (paritySummaryId) references dbo.ParitySummary(Id),
+	constraint diff_version foreign key (versionId) references dbo.[Version](Id)
+	)
 GO

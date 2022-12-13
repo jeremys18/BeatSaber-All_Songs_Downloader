@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Beat_Saber_All_Songs_Downloader.Models
+namespace Beat_Saber_All_Songs_Downloader.Models.Legacy
 {
     [Table("Song")]
     public class Song
@@ -13,21 +13,22 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         [Key]
         public int SongId { get; set; }
         public string id { get; set; }
+        public string key { get; set; }
+        public string hash { get; set; }
         public string name { get; set; }
         public string description { get; set; }
+        public string directDownload { get; set; }
+        public string downloadURL { get; set; }
+        public string coverURL { get; set; }
         public string uploaded { get; set; }
-        public bool automapper { get; set; }
-        public bool ranked { get; set; }
-        public bool qualified { get; set; }
-        public string createdAt { get; set; }
-        public string updatedAt { get; set; }
-        public string lastPublishedAt { get; set; }
-
+        public string deletedAt { get; set; }
         public int uploaderId { get; set; }
         public int metadataId { get; set; }
         public int statsId { get; set; }
+        public bool ranked { get; set; }
+        public bool qualified { get; set; }
 
-        // Virtuals
+
         public virtual Uploader uploader { get; set; }
         public virtual Metadata metadata { get; set; }
         public virtual Stats stats { get; set; }

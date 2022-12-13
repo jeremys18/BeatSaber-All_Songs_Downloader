@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Beat_Saber_All_Songs_Downloader.Models
+namespace Beat_Saber_All_Songs_Downloader.Models.Legacy
 {
     [Table("Stats")]
     public class Stats
@@ -10,6 +10,7 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public int plays { get; set; }
         public int downVotes { get; set; }
         public int upVotes { get; set; }
-        public double score { get; set; }
+        public double heat { get; set; }
+        public decimal rating { get; set; }
     }
 }

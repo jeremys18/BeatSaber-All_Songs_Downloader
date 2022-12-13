@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="52b96e9e-08e5-46db-bbd5-38ea12f00265" ChangeDateTime="12/12/2022 22:06:08">
+    <Property Name="ElementName" Value="[dbo].[DifficultyInfo].[duration]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DifficultyInfo]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="paritySummaryId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="85eac68d-a935-4399-a5cc-9b7c061bd750" ChangeDateTime="12/12/2022 22:06:23">
+    <Property Name="ElementName" Value="[dbo].[DifficultyInfo].[length]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DifficultyInfo]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="njs" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="88298ca8-c430-410b-bf9b-d82c7919c5ad" ChangeDateTime="12/12/2022 22:06:36">
+    <Property Name="ElementName" Value="[dbo].[DifficultyInfo].[bombs]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DifficultyInfo]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="offset" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="2fdad2d5-6a25-49b9-bb74-167f8743e144" ChangeDateTime="12/12/2022 22:07:34">
+    <Property Name="ElementName" Value="[dbo].[DifficultyInfo].[njsOffset]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DifficultyInfo]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="length" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="5a55cba0-b8dd-4b50-9bd9-1fb38e331446" ChangeDateTime="12/12/2022 22:23:40">
+    <Property Name="ElementName" Value="[dbo].[Song].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Song]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SongId" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="d7f5ee1e-1901-4074-a57c-802590089eca" ChangeDateTime="12/12/2022 22:23:46">
+    <Property Name="ElementName" Value="[dbo].[Song].[_id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Song]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="id" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="60d48104-c8ec-42bf-a9f7-33914f990f1c" ChangeDateTime="12/12/2022 23:13:00">
+    <Property Name="ElementName" Value="[dbo].[Uploader].[username]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Uploader]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="name" />
+  </Operation>
+</Operations>

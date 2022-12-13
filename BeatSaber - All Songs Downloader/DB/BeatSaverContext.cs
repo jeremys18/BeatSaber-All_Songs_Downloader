@@ -5,9 +5,8 @@ namespace BeatSaber_All_Songs_Downloader.DB
 {
     class BeatSaverContext : DbContext
     {
-        public DbSet<Characteristic> Characteristics { get; set; }
-        public DbSet<Difficulties> Difficulties { get; set; }
-        public DbSet<Difficulties2> Difficulties2s { get; set; }
+        public DbSet<Verison> Verisons { get; set; }
+        public DbSet<ParitySummary> ParitySummaries { get; set; }
         public DbSet<DifficultyInfo> DifficultyInfos { get; set; }
         public DbSet<Metadata> Metadatas { get; set; }
         public DbSet<Song> Songs { get; set; }

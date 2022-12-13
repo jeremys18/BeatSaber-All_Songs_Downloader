@@ -7,17 +7,17 @@ namespace BeatSaber_All_Songs_Downloader
     {
         internal static string GetValidFileName(string basePath, Song song)
         {
-            var fileName = $"{song.key} - ({song.name} - {song.metadata.songAuthorName} [{song.uploader.username}]).zip";
+            var fileName = $"{song.id} - ({song.name} - {song.metadata.songAuthorName} [{song.uploader.name}]).zip";
             var filePath = $@"{basePath}\{ReplaceInvalidChars(fileName)}";
 
             if (filePath.Length > 260)
             {
-                fileName = $"{song.key} - {song.name}.zip";
+                fileName = $"{song.id} - {song.name}.zip";
                 filePath = $@"{basePath}\{ReplaceInvalidChars(fileName)}";
 
                 if ($@"{basePath}\{fileName}".Length > 260)
                 {
-                    fileName = $"{song.key} - Song name too long.zip";
+                    fileName = $"{song.id} - Song name too long.zip";
                     filePath = $@"{basePath}\{ReplaceInvalidChars(fileName)}";
                 }
             }

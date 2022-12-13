@@ -13,13 +13,13 @@ namespace BeatSaber___All_Songs_Downloader
                 return false;
             }
 
-            return x.key.Equals(y.key, StringComparison.InvariantCulture);
+            return x.id.Equals(y.id, StringComparison.InvariantCulture);
         }
 
         public int GetHashCode(Song obj)
         {
             if (obj == null) return 0;
-            return obj.key.GetHashCode();
+            return obj.id.GetHashCode();
         }
     }
 }

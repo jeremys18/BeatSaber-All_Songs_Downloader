@@ -35,7 +35,7 @@ namespace BeatSaber_All_Songs_Downloader.DB
             using (var context = _context)
             {
                 context.Songs.AddRange(songs);
-                context.SaveChanges();
+                context.batch();
             }
         }
 
@@ -45,12 +45,11 @@ namespace BeatSaber_All_Songs_Downloader.DB
             {
                 foreach(var song in songs)
                 {
-                    var dbSongStats = _context.Songs.First(x => x._id == song._id).stats;
+                    var dbSongStats = _context.Songs.First(x => x.id == song.id).stats;
                     dbSongStats.downloads = song.stats.downloads;
                     dbSongStats.downVotes = song.stats.downVotes;
-                    dbSongStats.heat = song.stats.heat;
                     dbSongStats.plays = song.stats.plays;
-                    dbSongStats.rating = song.stats.rating;
+                    dbSongStats.score = song.stats.score;
                     dbSongStats.upVotes = song.stats.upVotes;
                 }
                 context.SaveChanges();

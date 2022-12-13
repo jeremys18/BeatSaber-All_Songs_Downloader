@@ -6,7 +6,6 @@
 	[levelAuthorName] [nvarchar](max) NOT NULL,
 	[bpm] [decimal](6, 2) NOT NULL,
 	[duration] [int] NOT NULL,
-	[difficultiesId] [int] NOT NULL,
  CONSTRAINT [PK_Metadata] PRIMARY KEY CLUSTERED 
 (
 	[Id] ASC

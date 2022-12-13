@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Beat_Saber_All_Songs_Downloader.Models
+namespace Beat_Saber_All_Songs_Downloader.Models.Legacy
 {
     [Table("Difficulties")]
     public class Difficulties

@@ -61,7 +61,7 @@ namespace BeatSaber_All_Songs_Downloader
 
             if (!downloadNewData)
             {  
-                if (_songs.totalDocs == 0)
+                if (_songs.docs.Count == 0)
                 {
                     UpdateTextBox("\nIt looks like you haven't downloaded the song data yet. You need to before this can continue. Download all songs or you can check download new song data and try again.");
                 }
@@ -305,8 +305,6 @@ namespace BeatSaber_All_Songs_Downloader
             {
                 result.docs = repo.GetAllSongs();
             }
-                
-            result.totalDocs = result.docs.Count;
 
             return result;
         }
