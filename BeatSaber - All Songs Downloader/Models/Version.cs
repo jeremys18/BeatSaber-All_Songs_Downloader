@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Beat_Saber_All_Songs_Downloader.Models
 {
-    [Table("Verison")]
-    public class Verison
+    [Table("Version")]
+    public class Version
     {
-        [Key]
         public int Id { get; set; }
         public int SongId { get; set; }
         public string hash { get; set; }
@@ -20,6 +18,6 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public string previewURL { get; set; }
          
         public virtual List<DifficultyInfo> diffs { get; set; }
-        public virtual Song Song { get; set; }
+        public Song Song { get; set; }
     }
 }

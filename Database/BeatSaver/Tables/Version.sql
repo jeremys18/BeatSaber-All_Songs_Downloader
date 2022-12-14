@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[Version]
 (
-	[Id] INT NOT NULL PRIMARY KEY, 
+	[Id] INT NOT NULL PRIMARY KEY identity, 
     [SongId] INT NOT NULL, 
     [hash] NVARCHAR(100) NOT NULL, 
     [state] NVARCHAR(100) NOT NULL, 

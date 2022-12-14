@@ -43,7 +43,7 @@ namespace BeatSaber___All_Songs_Downloader.Helpers
             string saveFolderLocaion = $@"{roaming}\BeatSaber - All Songs Downloader";
             if (!Directory.Exists(saveFolderLocaion))
             {
-                return new PageResult();
+                return new PageResult { docs = new List<Song>()};
             }
             var json = File.ReadAllText($@"{saveFolderLocaion}\songs.json");
             var result = JsonConvert.DeserializeObject<PageResult>(json);

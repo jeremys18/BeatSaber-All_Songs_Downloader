@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Beat_Saber_All_Songs_Downloader.Models
 {
     [Table("Uploader")]
     public class Uploader
     {
+        [Key]
         public int UploaderId { get; set; }
         public string id { get; set; }
         public string name { get; set; }

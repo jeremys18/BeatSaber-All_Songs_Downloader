@@ -32,10 +32,24 @@ namespace BeatSaber_All_Songs_Downloader.DB
 
         public void SaveSongsToDb(List<Song> songs)
         {
+            if (songs == null) return;
+
             using (var context = _context)
             {
-                context.Songs.AddRange(songs);
-                context.batch();
+                var loopCount = songs.Count < 1000 ? 1 : songs.Count / 1000;
+                for(int i = 0; i < loopCount; i++)
+                {
+                    try
+                    {
+                        var currentSongs = songs.Skip(1000 * i).Take(1000);
+                        context.Songs.AddRange(currentSongs);
+                        context.SaveChanges();
+                    }
+                    catch(Exception e)
+                    {
+                        var f = e.Message;
+                    }
+                }
             }
         }
 

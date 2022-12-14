@@ -1,12 +1,10 @@
 ﻿CREATE TABLE [dbo].[Uploader](
-	[UploaderId] [int] IDENTITY(1,1) NOT NULL,
+	[UploaderId] [int] primary key IDENTITY(1,1) NOT NULL,
 	[id] [nvarchar](128) NOT NULL,
 	[name] [nvarchar](max) NOT NULL,
  [avatar] NVARCHAR(250) NOT NULL, 
     [type] NVARCHAR(250) NOT NULL, 
     [admin] BIT NOT NULL, 
-    [curator] NCHAR(10) NOT NULL, 
-    CONSTRAINT [PK_Uploader] PRIMARY KEY CLUSTERED 
-([UploaderId])WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+    [curator] NCHAR(10) NOT NULL
+)
 GO

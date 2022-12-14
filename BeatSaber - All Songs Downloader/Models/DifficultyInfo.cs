@@ -7,6 +7,7 @@ namespace Beat_Saber_All_Songs_Downloader.Models
     public class DifficultyInfo
     {
         public int Id { get; set; }
+        public int versionId { get; set; }
         public int paritySummaryId { get; set; }
         public double njs { get; set; }
         public double offset { get; set; }
@@ -26,5 +27,6 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public int maxScore { get; set; } 
 
         public virtual ParitySummary paritySummary { get; set; }
+        public virtual Version Version { get; set; }
     }
 }

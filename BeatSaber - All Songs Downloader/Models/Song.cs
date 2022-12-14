@@ -31,7 +31,7 @@ namespace Beat_Saber_All_Songs_Downloader.Models
         public virtual Uploader uploader { get; set; }
         public virtual Metadata metadata { get; set; }
         public virtual Stats stats { get; set; }
-        public virtual List<Verison> versions { get;set;}
+        public virtual List<Version> versions { get;set;}
 
         public override string ToString()
         {

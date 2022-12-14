@@ -52,14 +52,14 @@ namespace BeatSaber_All_Songs_Downloader
                     }
                     catch (WebException e)
                     {
-                        var resp = new StreamReader(e.Response.GetResponseStream()).ReadToEnd().ToLower();
+                        var resp = e.Response == null ? null : new StreamReader(e.Response.GetResponseStream()).ReadToEnd().ToLower();
                         var code = ((HttpWebResponse)e.Response).StatusCode;
                         if (code == HttpStatusCode.NotFound)
                         {
                             mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
                             mainWindow.AddSongToErrorList(song);
                         }
-                        else if (resp.Contains("rate limit"))
+                        else if (resp != null && resp.Contains("rate limit"))
                         {
                             mainWindow.UpdateTextBox($"\n\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
                             Thread.Sleep(20000);
@@ -68,6 +68,7 @@ namespace BeatSaber_All_Songs_Downloader
                         else if (code != HttpStatusCode.Forbidden && e.Status != WebExceptionStatus.ConnectFailure)
                         {
                             retrySongs.Add(song);
+                            mainWindow.UpdateTextBox($"\n\nError downloading {song.name}. Most likely timed out. Song qued for retry....\n");
                         }
                         else
                         {

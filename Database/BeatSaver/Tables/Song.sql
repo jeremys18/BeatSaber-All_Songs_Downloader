@@ -1,7 +1,6 @@
 ﻿CREATE TABLE [dbo].[Song](
 	[SongId] [int] IDENTITY(1,1) NOT NULL,
 	[id] [nvarchar](128) NOT NULL,
-	[key] [nvarchar](128) NOT NULL,
 	[name] [nvarchar](max) NOT NULL,
 	[description] [nvarchar](max) NOT NULL,
 	[uploaded] [nvarchar](max) NOT NULL,
