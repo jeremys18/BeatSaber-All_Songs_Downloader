@@ -5,6 +5,12 @@ namespace BeatSaber_All_Songs_Downloader.DB
 {
     class BeatSaverContext : DbContext
     {
+
+        public BeatSaverContext() : base()
+        {
+            this.Database.CommandTimeout = 3600;
+        }
+
         public DbSet<Version> Versions { get; set; }
         public DbSet<ParitySummary> ParitySummaries { get; set; }
         public DbSet<DifficultyInfo> DifficultyInfos { get; set; }

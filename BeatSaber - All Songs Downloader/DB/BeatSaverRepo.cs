@@ -24,6 +24,8 @@ namespace BeatSaber_All_Songs_Downloader.DB
                 result = _context.Songs
                     .Include("Metadata")
                     .Include("Uploader")
+                    .Include("Stats")
+                    .Include("Versions.Diffs.ParitySummary")
                     .ToList();
             }
 
