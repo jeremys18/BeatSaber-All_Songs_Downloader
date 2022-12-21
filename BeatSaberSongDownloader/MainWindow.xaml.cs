@@ -1,6 +1,6 @@
 ﻿using BeatSaberSongDownloader.Comparers;
 using BeatSaberSongDownloader.Helpers;
-using BeatSaberSongDownloader.Models.BareModels;
+using BeatSaberSongDownloader.Data.Models.BareModels;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;

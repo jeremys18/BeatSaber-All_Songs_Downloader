@@ -1,4 +1,4 @@
-﻿using BeatSaberSongDownloader.Models.BareModels;
+﻿using BeatSaberSongDownloader.Data.Models.BareModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

@@ -1,9 +1,9 @@
-﻿using BeatSaberSongDownloader.Models.BareModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using BeatSaberSongDownloader.Data.Models.BareModels;
 
 namespace BeatSaberSongDownloader
 {

@@ -1,4 +1,4 @@
-﻿namespace BeatSaberSongDownloader.Models.BareModels
+﻿namespace BeatSaberSongDownloader.Data.Models.BareModels
 {
     // This is a bare bones model. As the client no longer stores anything and we currently only care out the download url and song name, we only need those properties
     // The full pi model from the beatsaver server is under the detailed models folder. It's kept just in case we want to use more properties in the future. Also, our server uses it

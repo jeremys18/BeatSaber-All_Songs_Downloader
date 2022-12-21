@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace BeatSaberSongDownloader.Models.DetailedModels
+namespace BeatSaberSongDownloader.Data.Models.DetailedModels
 {
     public class Song
     {
