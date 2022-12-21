@@ -1,0 +1,25 @@
+﻿<Window x:Class="BeatSaberSongDownloader.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BeatSaberSongDownloader"
+        mc:Ignorable="d"
+        Title="BeatSaber - All Songs Downloader" Height="712.367" Width="1340">
+    <Grid Margin="0,0,0,0">
+        <TextBox x:Name="TextBlock" HorizontalAlignment="Left" Height="198" Margin="41,445,0,0" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalAlignment="Top" Width="1243"/>
+        <Button x:Name="DownloadBtn" Content="Download All" HorizontalAlignment="Left" Margin="1191,361,0,0" VerticalAlignment="Top" Width="93" Background="#FF0FF733" Click="DownloadBtn_Click"/>
+        <ListBox x:Name="NewSongsLB" HorizontalAlignment="Left" Height="332" Margin="57,44,0,0" VerticalAlignment="Top" Width="386" IsSynchronizedWithCurrentItem="False"/>
+        <Label Content="New songs" HorizontalAlignment="Left" Margin="226,11,0,0" VerticalAlignment="Top" Width="89"/>
+        <Label Content="Number of songs to download at once" HorizontalAlignment="Left" Margin="1013,19,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="NumberOfSongsAtOnceBox" HorizontalAlignment="Left" Height="26"  Margin="1072,50,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="65" MaxLength="2" PreviewTextInput="NumberValidationTextBox"/>
+        <Label Content="Save songs to:" HorizontalAlignment="Left" Margin="1072,125,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="SongFolderLabel" Content="" HorizontalAlignment="Left" Margin="978,156,0,0" VerticalAlignment="Top" Width="260" BorderThickness="2" BorderBrush="#FF1F1D1D"/>
+        <Button x:Name="BrowseBtn" Content="Broswe" HorizontalAlignment="Left" Margin="1072,198,0,0" VerticalAlignment="Top" Width="75" Background="#FF0D8EF7" Click="OpenFolderDialog"/>
+        <ListBox x:Name="SongErrorsLB" HorizontalAlignment="Left" Height="332" Margin="522,44,0,0" VerticalAlignment="Top" Width="357" IsSynchronizedWithCurrentItem="False"/>
+        <Label Content="Songs with errors" HorizontalAlignment="Left" Margin="646,11,0,0" VerticalAlignment="Top" Width="135" RenderTransformOrigin="2.243,0.415"/>
+        <CheckBox x:Name="DownloadSongDataCB" Content="Download/Redownload Song Data" HorizontalAlignment="Left" Margin="996,251,0,0" VerticalAlignment="Top" IsChecked="True"/>
+        <Button x:Name="NewSongsBtn" Content="Check for new songs" HorizontalAlignment="Left" Margin="978,361,0,0" VerticalAlignment="Top" Width="128" Background="#FFF4E619" Click="CheckForNewSongsBtn_Click"/>
+        <CheckBox x:Name="SaveToDbCB" Content="Save to database" HorizontalAlignment="Left" Margin="996,271,0,0" VerticalAlignment="Top" IsChecked="True"/>
+    </Grid>
+</Window>
