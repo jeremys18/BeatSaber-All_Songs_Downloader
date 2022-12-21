@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using BeatSaberSongDownloader.Comparers;
+using BeatSaberSongDownloader.Helpers;
+using BeatSaberSongDownloader.Models.BareModels;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Forms;
 
 namespace BeatSaberSongDownloader
 {
@@ -13,6 +17,8 @@ namespace BeatSaberSongDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string _folderBasePath = @"R:\BeatSaber Songs";
+        private List<Song> _songs;
         public MainWindow()
         {
             InitializeComponent();
@@ -22,12 +28,11 @@ namespace BeatSaberSongDownloader
         {
             var songCount = NumberOfSongsAtOnceBox.Text;
             var downloadSongData = DownloadSongDataCB.IsChecked.Value;
-            var useDb = SaveToDbCB.IsChecked.Value;
             var newSongs = NewSongsLB.Items.Cast<Song>().ToList();
             SongErrorsLB.Items.Clear();
             new Thread(async () =>
             {
-                await StartDownloadAsync(songCount, downloadSongData, useDb, newSongs);
+                await StartDownloadAsync(songCount, downloadSongData, newSongs);
 
             }).Start();
         }
@@ -35,32 +40,29 @@ namespace BeatSaberSongDownloader
         private void CheckForNewSongsBtn_Click(object sender, RoutedEventArgs e)
         {
             var downloadNewData = DownloadSongDataCB.IsChecked.Value;
-            var useDb = SaveToDbCB.IsChecked.Value;
             SongErrorsLB.Items.Clear();
             NewSongsLB.Items.Clear();
             new Thread(async () =>
             {
-                await OnlycCheckForNewSongsAsync(downloadNewData, useDb);
+                await OnlycCheckForNewSongsAsync(downloadNewData);
             }).Start();
         }
 
-        private async Task OnlycCheckForNewSongsAsync(bool downloadNewData, bool useDb)
+        private async Task OnlycCheckForNewSongsAsync(bool downloadNewData)
         {
-            var message = useDb ? "\nGetting songs from the database" : "\nGetting songs from file....";
-            UpdateTextBox(message);
-            _songs = useDb ? GetSongsFromDb() : FileHelper.GetPageResultFromFile();
+            UpdateTextBox("\nGetting songs from file....");
+            _songs = FileHelper.GetSongsFromFile();
 
             if (!downloadNewData)
             {
-                if (_songs.docs.Count == 0)
+                if (_songs.Count == 0)
                 {
                     UpdateTextBox("\nIt looks like you haven't downloaded the song data yet. You need to before this can continue. Download all songs or you can check download new song data and try again.");
                 }
                 else
                 {
-                    var source = useDb ? "database" : "file";
-                    UpdateTextBox($"\nGot songs from {source}. Because you opted not to download song data we will only check for missing song files. Checking downloaded songs against known songs.....");
-                    var newSongs = FileHelper.FindMissingSongFiles(_folderBasePath, _songs.docs, this);
+                    UpdateTextBox($"\nGot songs from local file. Because you opted not to download song data we will only check for missing song files. Checking downloaded songs against known songs.....");
+                    var newSongs = FileHelper.FindMissingSongFiles(_folderBasePath, _songs, this);
                     foreach (var song in newSongs)
                     {
                         AddSongToNewList(song);
@@ -71,30 +73,22 @@ namespace BeatSaberSongDownloader
             else
             {
                 var knownSongs = _songs;
-                var source = useDb ? "database" : "computer";
-                UpdateTextBox($"\nGot songs from {source}. Getting latest list of songs from server. This could take awhile....");
-                _songs = await new Downloader().GetAllSongInfoForAllFiltersAsync(this);
-                var newSongs = _songs.docs.Except(knownSongs.docs, new SongComparer());
+                UpdateTextBox($"\nGot songs from local file. Getting latest list of songs from server. This could take awhile....");
+                _songs = await new Downloader().GetAllSongInfo(this);
+                var newSongs = _songs.Except(knownSongs, new SongComparer());
                 foreach (var song in newSongs)
                 {
                     AddSongToNewList(song);
                 }
                 UpdateTextBox($"\n\nFound {newSongs.Count()} new songs on the server. To download them click the download all button.");
 
-                if (useDb)
-                {
-                    BeatSaverDbHelper.SaveSongsToDb(newSongs.ToList());
-                }
-                else
-                {
-                    FileHelper.SavePageResultToFile(_songs);
-                }
+                FileHelper.SaveSongsToFile(_songs);
             }
 
             EnableButtons();
         }
 
-        private async Task StartDownloadAsync(string numberOfSongs, bool downloadSongInfo, bool useDb, List<Song> newSongs)
+        private async Task StartDownloadAsync(string numberOfSongs, bool downloadSongInfo, List<Song> newSongs)
         {
             if (string.IsNullOrWhiteSpace(numberOfSongs) || string.IsNullOrWhiteSpace(_folderBasePath))
             {
@@ -108,7 +102,6 @@ namespace BeatSaberSongDownloader
             var threadCount = 0;
             var completedThreads = 0;
             var maxThreads = int.Parse(numberOfSongs);
-            var dataSource = useDb ? "database" : "file";
             DisableButtons();
 
             if (maxThreads > 50)
@@ -121,46 +114,39 @@ namespace BeatSaberSongDownloader
             if (newSongs != null && newSongs.Any())
             {
                 UpdateTextBox("\nIt looks like you already got the list of new songs. Downloading ONLY those songs now (to save a bunch of time)......");
-                _songs.docs = newSongs;
+                _songs = newSongs;
             }
             else if (downloadSongInfo)
             {
-                UpdateTextBox($"\nGetting songs from {dataSource}......");
-                var knownSongs = useDb ? GetSongsFromDb() : FileHelper.GetPageResultFromFile();
-                UpdateTextBox("\nDownloading song info for every song from server. This will take awhile. Go get a snack...........");
-                _songs = await downloader.GetAllSongInfoForAllFiltersAsync(this);
-                var songsToAdd = _songs.docs.Except(knownSongs.docs, new SongComparer()).ToList();
+                UpdateTextBox($"\nGetting known songs from local file......");
+                var knownSongs = FileHelper.GetSongsFromFile();
+                UpdateTextBox("\nDownloading song info for every song from server............"); // our server not theirs
+                _songs = await downloader.GetAllSongInfo(this);
+                var songsToAdd = _songs.Except(knownSongs, new SongComparer()).ToList();
                 foreach (var s in songsToAdd)
                 {
                     AddSongToNewList(s);
                 }
-                UpdateTextBox($"\n\nGot all song info\nThere are {songsToAdd.Count()} new songs since the last time you checked.\nSaving new songs to {dataSource}");
-                if (useDb)
-                {
-                    BeatSaverDbHelper.SaveSongsToDb(songsToAdd);
-                }
-                else
-                {
-                    FileHelper.SavePageResultToFile(_songs);
-                }
-                _songs.docs = songsToAdd;
+                UpdateTextBox($"\n\nGot all song info\nThere are {songsToAdd.Count()} new songs since the last time you checked.\nSaving all songs to local file...");
+                FileHelper.SaveSongsToFile(_songs);
+                _songs = songsToAdd;
             }
             else
             {
-                _songs = useDb ? GetSongsFromDb() : FileHelper.GetPageResultFromFile();
-                if (_songs.docs == null || _songs.docs.Count == 0)
+                _songs = FileHelper.GetSongsFromFile();
+                if (_songs == null || _songs.Count == 0)
                 {
                     UpdateTextBox("\n It seems you don't have the song data downloaded yet and you choose not to download it. So this can't continue. Check to download the song data before continuing....");
                     return;
                 }
-                UpdateTextBox($"\nGot current songs from {dataSource}.....");
+                UpdateTextBox($"\nGot current songs from local file.....");
 
-                _songs = GetMissingSongs();
+                _songs = FileHelper.FindMissingSongFiles(_folderBasePath, _songs, this);
 
-                UpdateTextBox($"\nFound {_songs.docs.Count} songs not downloaded. Will now download  all missing songs....");
+                UpdateTextBox($"\nFound {_songs.Count} songs not downloaded. Will now download all missing songs....");
             }
 
-            max = _songs.docs.Count;
+            max = _songs.Count;
 
             UpdateTextBox("\n\nStarting download of every song......");
 
@@ -186,7 +172,7 @@ namespace BeatSaberSongDownloader
                 i += count;
                 new Thread(async () =>
                 {
-                    await downloader.DownloadAllForRangeAsync(_folderBasePath, this, _songs.docs.GetRange(start, count));
+                    await downloader.DownloadAllForRangeAsync(_folderBasePath, this, _songs.GetRange(start, count), true);
                     if (++completedThreads == threadCount)
                     {
                         EnableButtons();
@@ -199,24 +185,6 @@ namespace BeatSaberSongDownloader
                 threadCount++;
             }
             UpdateTextBox($"\n\nStarted {threadCount} threads....");
-        }
-
-        private PageResult GetMissingSongs()
-        {
-            var result = new PageResult
-            {
-                docs = new List<Song>()
-            };
-            foreach (var song in _songs.docs)
-            {
-                var fileName = TextHandler.GetValidFileName(_folderBasePath, song);
-                if (!File.Exists(fileName))
-                {
-                    result.docs.Add(song);
-                }
-            }
-
-            return result;
         }
 
         private void EnableButtons()
@@ -276,8 +244,7 @@ namespace BeatSaberSongDownloader
         {
             Dispatcher.Invoke(() =>
             {
-                var item = $"{song.metadata.songName} - {song.metadata.songAuthorName}";
-                SongErrorsLB.Items.Add(item);
+                SongErrorsLB.Items.Add(song.Name);
             });
         }
 
@@ -287,17 +254,6 @@ namespace BeatSaberSongDownloader
             {
                 NewSongsLB.Items.Add(song);
             });
-        }
-
-        private PageResult GetSongsFromDb()
-        {
-            var result = new PageResult();
-            using (var repo = new BeatSaverRepo())
-            {
-                result.docs = repo.GetAllSongs();
-            }
-
-            return result;
         }
     }
 }

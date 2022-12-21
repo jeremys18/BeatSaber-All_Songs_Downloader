@@ -20,6 +20,5 @@
         <Label Content="Songs with errors" HorizontalAlignment="Left" Margin="646,11,0,0" VerticalAlignment="Top" Width="135" RenderTransformOrigin="2.243,0.415"/>
         <CheckBox x:Name="DownloadSongDataCB" Content="Download/Redownload Song Data" HorizontalAlignment="Left" Margin="996,251,0,0" VerticalAlignment="Top" IsChecked="True"/>
         <Button x:Name="NewSongsBtn" Content="Check for new songs" HorizontalAlignment="Left" Margin="978,361,0,0" VerticalAlignment="Top" Width="128" Background="#FFF4E619" Click="CheckForNewSongsBtn_Click"/>
-        <CheckBox x:Name="SaveToDbCB" Content="Save to database" HorizontalAlignment="Left" Margin="996,271,0,0" VerticalAlignment="Top" IsChecked="True"/>
     </Grid>
 </Window>

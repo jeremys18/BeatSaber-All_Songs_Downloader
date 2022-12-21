@@ -9,11 +9,8 @@ namespace BeatSaberSongDownloader
 {
     public class Downloader
     {
-        private MainWindow _mainWindow;
-
         public async Task DownloadAllForRangeAsync(string songFolderBasePath, MainWindow mainWindow, List<Song> songs, bool continueRetrying)
         {
-            _mainWindow = mainWindow;
             var retrySongs = new List<Song>();
             var songsToGetFromOurServer = new List<Song>();
             var numberOfExistingSongs = 0;
@@ -34,7 +31,7 @@ namespace BeatSaberSongDownloader
                             wc.Headers.Add(Constants.UserAgentHeaderName, Constants.UserAgentHeaderValue);
                             wc.Headers.Add(Constants.AcceptLangHeaderName, Constants.AcceptLangHeaderValue);
                             wc.Headers.Add(Constants.SecFetchHeaderName, Constants.SecFetchHeaderValue);
-                            wc.DownloadFileAsync(song.BeatSaverDownloadUrl, filePath);
+                            wc.DownloadFile(song.BeatSaverDownloadUrl, filePath);
                         }
 
                         if (!File.Exists(filePath))
@@ -144,6 +141,7 @@ namespace BeatSaberSongDownloader
         internal async Task<int> GetTotalSongCount()
         {
             // call our server to simply get song count
+            return 0;
         }
     }
 }
