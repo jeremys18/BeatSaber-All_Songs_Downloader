@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberSongDownloader.Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberDownloader.Data", "BeatSaberDownloader.Data\BeatSaberDownloader.Data.csproj", "{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}"
 EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BeatSaberSongDownloader.DB", "BeatSaberSongDownloader.DB\BeatSaberSongDownloader.DB.sqlproj", "{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,12 @@ Global
 		{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

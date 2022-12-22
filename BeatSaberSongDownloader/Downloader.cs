@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using BeatSaberSongDownloader.Data.Models.BareModels;
+using Newtonsoft.Json;
 
 namespace BeatSaberSongDownloader
 {
@@ -132,16 +135,34 @@ namespace BeatSaberSongDownloader
             }
         }
 
-        internal async Task<List<Song>> GetAllSongInfo(MainWindow mainWindow)
+        internal async Task<List<Song>?> GetAllSongInfo(MainWindow mainWindow)
         {
-            // Make call to our server to get all the song info
-            return new List<Song>();
+            var result = new List<Song>();
+
+            try
+            {
+                // Make call to our server to get all the song info
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync("https://localhost:7205/api/song/allsongs");
+                   //  response.EnsureSuccessStatusCode();
+                    var content = await response.Content.ReadAsStringAsync();
+                    result = JsonConvert.DeserializeObject<List<Song>>(content);
+                }
+            }
+            catch (Exception e)
+            {
+                mainWindow.UpdateTextBox($"Tried to call our server but ran into error: {e.Message}.....");
+            }
+
+
+            return result;
         }
 
         internal async Task<int> GetTotalSongCount()
         {
             // call our server to simply get song count
-            return 0;
+            return 1;
         }
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace BeatSaberSongDownloader.Data.Models.DetailedModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BeatSaberSongDownloader.Data.Models.DetailedModels
 {
+    [Table("Metadata")]
     public class Metadata
     {
         public int Id { get; set; }

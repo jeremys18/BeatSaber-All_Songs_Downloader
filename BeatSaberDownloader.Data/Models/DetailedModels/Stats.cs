@@ -1,5 +1,8 @@
-﻿namespace BeatSaberSongDownloader.Data.Models.DetailedModels
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace BeatSaberSongDownloader.Data.Models.DetailedModels
 {
+    [Table("Stats")]
     public class Stats
     {
         public int Id { get; set; }

@@ -1,9 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BeatSaberSongDownloader.Data.Models.DetailedModels
 {
+    [Table("Song")]
     public class Song
     {
+        [Key]
         public int SongId { get; set; }
         public string id { get; set; }
         public string name { get; set; }

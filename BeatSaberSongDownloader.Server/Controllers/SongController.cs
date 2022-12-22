@@ -10,7 +10,6 @@ namespace BeatSaberSongDownloader.Server.Controllers
     {
         [Route("allsongs")]
         [HttpGet]
-        [VerifyAccess]
         public List<Song> GetAllSongsInfo()
         {
             // return song info list
@@ -19,7 +18,6 @@ namespace BeatSaberSongDownloader.Server.Controllers
 
         [Route("{songId}")]
         [HttpGet]
-        [VerifyAccess]
         public Song GetSongFile(string songId)
         {
             // return song info for specific song id
