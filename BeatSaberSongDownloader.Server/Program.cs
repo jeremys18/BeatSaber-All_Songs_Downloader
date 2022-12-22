@@ -1,4 +1,6 @@
 using BeatSaberDownloader.Data.DBContext;
+using BeatSaberSongDownloader.Server.ExtentionMethods;
+using BeatSaberSongDownloader.Server.Services.SongDownloader;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 builder.Services.AddDbContext<BeatSaverContext>();
+builder.Services.AddCronJob<SongDownloadService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"*/5 * * * *";
+});
 
 app.UseHttpsRedirection();
 

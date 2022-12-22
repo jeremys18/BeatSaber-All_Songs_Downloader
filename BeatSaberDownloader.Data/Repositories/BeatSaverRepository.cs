@@ -1,10 +1,7 @@
 ﻿using BeatSaberDownloader.Data.DBContext;
 using BeatSaberSongDownloader.Data.Models.DetailedModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace BeatSaberDownloader.Data.Repositories
 {
@@ -13,9 +10,9 @@ namespace BeatSaberDownloader.Data.Repositories
         private bool isDisposed;
         private BeatSaverContext _context;
 
-        public BeatSaverRepository()
+        public BeatSaverRepository(IConfiguration configuration)
         {
-            _context = new BeatSaverContext();
+            _context = new BeatSaverContext(configuration);
         }
 
         public List<Song> GetAllSongs()
@@ -41,13 +38,13 @@ namespace BeatSaberDownloader.Data.Repositories
 
             using (var context = _context)
             {
-                var loopCount = songs.Count < 1000 ? 1 : songs.Count / 1000;
+                var loopCount = songs.Count < 1000 ? 1 : (songs.Count / 1000) + 1;
                 for (int i = 0; i < loopCount; i++)
                 {
                     try
                     {
-                        var currentSongs = songs.Skip(1000 * i).Take(1000);
-                        context.Songs.AddRange(currentSongs);
+                        var currentSongs = songs.Skip(1000 * i).Take(1000).ToList();
+                        UpsertSongs(currentSongs, context);
                         context.SaveChanges();
                     }
                     catch (Exception e)
@@ -58,20 +55,22 @@ namespace BeatSaberDownloader.Data.Repositories
             }
         }
 
-        public void UpdateSongStats(List<Song> songs)
+        public void UpsertSongs(List<Song> songs, BeatSaverContext context)
         {
-            using (var context = _context)
+            foreach(var song in songs)
             {
-                foreach (var song in songs)
+                var dbSong = context.Songs.FirstOrDefault(x => x.id == song.id);
+                if(song != null)
                 {
-                    var dbSongStats = _context.Songs.First(x => x.id == song.id).stats;
-                    dbSongStats.downloads = song.stats.downloads;
-                    dbSongStats.downVotes = song.stats.downVotes;
-                    dbSongStats.plays = song.stats.plays;
-                    dbSongStats.score = song.stats.score;
-                    dbSongStats.upVotes = song.stats.upVotes;
+                    // Update
                 }
-                context.SaveChanges();
+                else
+                {
+                    // ensure the uploader is correct as uploaders can upload many songs
+                    var dbUploader = context.Uploaders.FirstOrDefault(x => x.id == song.uploader.id);
+                    song.uploader = dbUploader ?? song.uploader;
+                    context.Songs.Add(song);
+                }
             }
         }
 
