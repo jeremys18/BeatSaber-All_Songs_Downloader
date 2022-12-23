@@ -19,11 +19,12 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             var numberOfExistingSongs = 0;
             foreach (var song in docs)
             {
+                var verNum = 1;
                 foreach (var ver in song.versions)
                 {
                     try
                     {
-                        var fileName = TextHandler.GetValidFileName(songFolderBasePath, song);
+                        var fileName = TextHandler.GetValidFileName(songFolderBasePath, song, verNum);
 
                         if (File.Exists(fileName))
                         {
@@ -72,6 +73,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                             //mainWindow.AddSongToErrorList(song);
                         }
                     }
+                    verNum++;
                 }
             }
             if (retrySongs.Count != 0)

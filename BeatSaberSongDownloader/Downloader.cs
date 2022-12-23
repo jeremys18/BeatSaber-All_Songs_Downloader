@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using BeatSaberSongDownloader.Data.Models.BareModels;
 using Newtonsoft.Json;
 
@@ -21,9 +22,7 @@ namespace BeatSaberSongDownloader
             {
                 try
                 {
-                    var filePath = $@"{songFolderBasePath}\{song.FileName}";
-
-                    if (File.Exists(filePath))
+                    if (File.Exists(song.FileName))
                     {
                         numberOfExistingSongs++;
                     }
@@ -34,13 +33,13 @@ namespace BeatSaberSongDownloader
                             wc.Headers.Add(Constants.UserAgentHeaderName, Constants.UserAgentHeaderValue);
                             wc.Headers.Add(Constants.AcceptLangHeaderName, Constants.AcceptLangHeaderValue);
                             wc.Headers.Add(Constants.SecFetchHeaderName, Constants.SecFetchHeaderValue);
-                            wc.DownloadFile(song.BeatSaverDownloadUrl, filePath);
+                            wc.DownloadFile(song.BeatSaverDownloadUrl, song.FileName);
                         }
 
-                        if (!File.Exists(filePath))
+                        if (!File.Exists(song.FileName))
                         {
                             // something went wrong here. Try from our server
-                            mainWindow.UpdateTextBox($"\nCould not download file {song.FileName} directly from BeatSaver servers. Lets try from our own server....");
+                            mainWindow.UpdateTextBox($"\nCould not download file {song.Name} directly from BeatSaver servers. Lets try from our own server....");
                             songsToGetFromOurServer.Add(song);
                         }
                     }
@@ -107,7 +106,6 @@ namespace BeatSaberSongDownloader
             foreach (var song in songs) {
                 try
                 {
-                    var filePath = $@"{songFolderBasePath}\{song.FileName}";
                     var ourServerDownloadUrl = $@"{Constants.OurServerBaseDownloadUrl}\{song.Id}";
 
                     using (var wc = new WebClient())
@@ -115,27 +113,27 @@ namespace BeatSaberSongDownloader
                         // Add auth guids here to lower rouge requests. yes, I know you can see this but this isnt a super secure app....yet. If people spam my server i'll lock it down
                         wc.Headers.Add(Constants.AppTokenHeaderName, Constants.AppTokenValue);
                         wc.Headers.Add(Constants.YoloHoloHeaderName, Constants.YoloHoloHeaderValue);
-                        wc.DownloadFile(ourServerDownloadUrl, filePath);
+                        wc.DownloadFile(ourServerDownloadUrl, song.FileName);
                     }
 
-                    if (!File.Exists(filePath))
+                    if (!File.Exists(song.FileName))
                     {
                         // something went wrong here. Skip song
-                        mainWindow.UpdateTextBox($"\nCould not download file {song.FileName} directly from BeatSaver servers or our servers. This shouldnt happen....");
+                        mainWindow.UpdateTextBox($"\nCould not download file {song.Name} directly from BeatSaver servers or our servers. This shouldnt happen....");
                         songsWithFatelErrors.Add(song);
                         mainWindow.AddSongToErrorList(song);
                     }
                 }
                 catch (WebException e)
                 {
-                    mainWindow.UpdateTextBox($"\nCould not download file {song.FileName} directly from BeatSaver servers or our servers. This shouldnt happen....");
+                    mainWindow.UpdateTextBox($"\nCould not download file {song.Name} directly from BeatSaver servers or our servers. This shouldnt happen....");
                     songsWithFatelErrors.Add(song);
                     mainWindow.AddSongToErrorList(song);
                 }
             }
         }
 
-        internal async Task<List<Song>?> GetAllSongInfo(MainWindow mainWindow)
+        internal async Task<List<Song>?> GetAllSongInfo(MainWindow mainWindow, string basePath)
         {
             var result = new List<Song>();
 
@@ -144,8 +142,9 @@ namespace BeatSaberSongDownloader
                 // Make call to our server to get all the song info
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetAsync("https://localhost:7205/api/song/allsongs");
-                   //  response.EnsureSuccessStatusCode();
+                    var response = await client.GetAsync($"https://localhost:7205/api/song/allsongs?basePath={HttpUtility.UrlEncode(basePath)}");
+
+                    response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();
                     result = JsonConvert.DeserializeObject<List<Song>>(content);
                 }

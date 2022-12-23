@@ -26,7 +26,6 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             {
                 // Do everything we did before in the client but now do it in the background :D>-<
                 var downloader = new Downloader();
-                _logger.LogInformation("Ooo did I sneak past you???????????????????????????????????");
 
                 // Get current list of songs from their server
                 var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
@@ -35,12 +34,12 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                 new BeatSaverRepository(_configuration).SaveSongsToDb(latestSongs.docs);
 
                 // Download all the songs
+                await downloader.DownloadAllForRangeAsync(@"D:\BeatSaverSongs", latestSongs.docs);
             }
             catch (Exception e)
             {
                 return Task.FromException(e);
             }
-            _logger.LogInformation($"{DateTime.Now:hh:mm:ss} CronJob 3 is working.");
             return Task.CompletedTask;
         }
 

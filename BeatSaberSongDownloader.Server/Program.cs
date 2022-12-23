@@ -1,6 +1,9 @@
 using BeatSaberDownloader.Data.DBContext;
 using BeatSaberSongDownloader.Server.ExtentionMethods;
 using BeatSaberSongDownloader.Server.Services.SongDownloader;
+using MediatR;
+using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,8 @@ builder.Services.AddCronJob<SongDownloadService>(c =>
     c.TimeZoneInfo = TimeZoneInfo.Local;
     c.CronExpression = @"33 14 * * *";
 });
+
+builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 
 var app = builder.Build();
 

@@ -4,9 +4,10 @@ namespace BeatSaberSongDownloader.Server.Handlers
 {
     internal static class TextHandler
     {
-        internal static string GetValidFileName(string basePath, Song song)
+        internal static string GetValidFileName(string basePath, Song song, int versionNum)
         {
-            var fileName = $"{song.id} - ({song.name} - {song.metadata.songAuthorName} [{song.uploader.name}]).zip";
+            var version = versionNum == 1 ? string.Empty : $" V{versionNum}";
+            var fileName = $"{song.id} - ({song.name}{version} - {song.metadata.songAuthorName} [{song.uploader.name}]).zip";
             var filePath = $@"{basePath}\{ReplaceInvalidChars(fileName)}";
 
             if (filePath.Length > 260)

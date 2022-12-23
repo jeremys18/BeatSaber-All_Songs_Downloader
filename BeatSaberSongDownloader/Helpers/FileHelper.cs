@@ -39,12 +39,12 @@ namespace BeatSaberSongDownloader.Helpers
         public static List<Song> GetSongsFromFile()
         {
             string roaming = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            string saveFolderLocaion = $@"{roaming}\BeatSaber - Songs Downloader";
-            if (!Directory.Exists(saveFolderLocaion))
+            var saveFileLocation = $@"{roaming}\BeatSaber - Songs Downloader\songs.json";
+            if (!File.Exists(saveFileLocation))
             {
                 return new List<Song>();
             }
-            var json = File.ReadAllText($@"{saveFolderLocaion}\songs.json");
+            var json = File.ReadAllText(saveFileLocation);
             var result = JsonConvert.DeserializeObject<List<Song>>(json);
             return result ?? new List<Song>();
         }

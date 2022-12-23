@@ -22,10 +22,9 @@ namespace BeatSaberDownloader.Data.Repositories
             using (var context = _context)
             {
                 result = _context.Songs
-                    .Include("Metadata")
-                    .Include("Uploader")
-                    .Include("Stats")
-                    .Include("Versions.Diffs.ParitySummary")
+                    .Include("metadata")
+                    .Include("uploader")
+                    .Include("versions")
                     .ToList();
             }
 

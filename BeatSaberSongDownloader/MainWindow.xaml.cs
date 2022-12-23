@@ -17,7 +17,7 @@ namespace BeatSaberSongDownloader
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string _folderBasePath = @"R:\BeatSaber Songs";
+        private string _folderBasePath = string.Empty;
         private List<Song> _songs;
         public MainWindow()
         {
@@ -44,12 +44,19 @@ namespace BeatSaberSongDownloader
             NewSongsLB.Items.Clear();
             new Thread(async () =>
             {
-                await OnlycCheckForNewSongsAsync(downloadNewData);
+                await OnlyCheckForNewSongsAsync(downloadNewData);
             }).Start();
         }
 
-        private async Task OnlycCheckForNewSongsAsync(bool downloadNewData)
+        private async Task OnlyCheckForNewSongsAsync(bool downloadNewData)
         {
+            if(string.IsNullOrWhiteSpace(_folderBasePath))
+            {
+                UpdateTextBox("You MUST select a folder first! It's required...");
+                return;
+            }
+
+            DisableButtons();
             UpdateTextBox("\nGetting songs from file....");
             _songs = FileHelper.GetSongsFromFile();
 
@@ -61,7 +68,7 @@ namespace BeatSaberSongDownloader
                 }
                 else
                 {
-                    UpdateTextBox($"\nGot songs from local file. Because you opted not to download song data we will only check for missing song files. Checking downloaded songs against known songs.....");
+                    UpdateTextBox($"\nGot songs from local file. Because you opted not to download song data we will only check for missing song files. Checking downloaded songs against local list of known songs.....");
                     var newSongs = FileHelper.FindMissingSongFiles(_folderBasePath, _songs, this);
                     foreach (var song in newSongs)
                     {
@@ -74,15 +81,16 @@ namespace BeatSaberSongDownloader
             {
                 var knownSongs = _songs;
                 UpdateTextBox($"\nGot songs from local file. Getting latest list of songs from server. This could take awhile....");
-                _songs = await new Downloader().GetAllSongInfo(this);
+                _songs = await new Downloader().GetAllSongInfo(this, _folderBasePath);
                 var newSongs = _songs.Except(knownSongs, new SongComparer());
                 foreach (var song in newSongs)
                 {
                     AddSongToNewList(song);
                 }
-                UpdateTextBox($"\n\nFound {newSongs.Count()} new songs on the server. To download them click the download all button.");
-
+               
                 FileHelper.SaveSongsToFile(_songs);
+                UpdateTextBox("\nSaved all songs list locally......");
+                UpdateTextBox($"\n\nFound {newSongs.Count()} new songs on the server. To download them click the download all button.");
             }
 
             EnableButtons();
@@ -121,7 +129,7 @@ namespace BeatSaberSongDownloader
                 UpdateTextBox($"\nGetting known songs from local file......");
                 var knownSongs = FileHelper.GetSongsFromFile();
                 UpdateTextBox("\nDownloading song info for every song from server............"); // our server not theirs
-                _songs = await downloader.GetAllSongInfo(this);
+                _songs = await downloader.GetAllSongInfo(this, _folderBasePath);
                 var songsToAdd = _songs.Except(knownSongs, new SongComparer()).ToList();
                 foreach (var s in songsToAdd)
                 {

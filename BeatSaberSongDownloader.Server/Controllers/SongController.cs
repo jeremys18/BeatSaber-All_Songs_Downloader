@@ -1,5 +1,6 @@
 ﻿using BeatSaberSongDownloader.Data.Models.BareModels;
-using BeatSaberSongDownloader.Server.Attributes;
+using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetAllSongs.Query;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BeatSaberSongDownloader.Server.Controllers
@@ -8,12 +9,20 @@ namespace BeatSaberSongDownloader.Server.Controllers
     [ApiController]
     public class SongController : ControllerBase
     {
+        private IMediator _mediator;
+
+        public SongController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [Route("allsongs")]
         [HttpGet]
-        public List<Song> GetAllSongsInfo()
+        public async Task<IActionResult> GetAllSongsInfoAsync(string basePath)
         {
             // return song info list
-            return new List<Song> { new Song { BeatSaverDownloadUrl = "", FileName = "Hola", Id = "1d", Name = "Hola" } };
+            var result = await _mediator.Send(new GetAllSongsQuery { SongBasePath = basePath});
+            return Ok(result);
         }
 
         [Route("{songId}")]
