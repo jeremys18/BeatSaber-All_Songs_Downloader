@@ -7,36 +7,34 @@ If you run into issue please open a new issue here. If you have any suggestions 
 
 
 # How to Use
+ The app is very simple. It's entire goal is nothing more than to download EVERY song from the BeatSaver servers.
+ 
+ This is a time consuming thing to do so don't expect to get evrything in 5 mins. That's the bad news.
+The good news is that this app is now on ver 2.0! :D Why's that good? Well, because in ver 1 you had to wait hours for it to grab all the song information from the beatsaver servers. It takes 6 hours nowadays to do just that step. :O But in ver 2.0 I've split out the code to have our own server. My server does all the work for you so all this app has to do now is......call my server. It takes like 20 seconds, usualy like 5, to get what took hours before. So now the app gets all the info it needs quickly and then downloads the songs for you.
 
-You need to decide how you want to store the song data FIRST. The app downloads all the song info from BeatSaver servers. To keep track of the songs you already downloaded it saves that info to a database, if you want, or to a file if you don't.
+But ... it ... gets ... better!
 
-This isn't needed by you personally unless you want a way to have the songinfo at any time, but is needed by the app. For example, if you always want the ability to know what every song on the server is without having to actually check the server. But it's used by the app to know instantly what songs you have already gotten and eliminate them from redownload. It's also used in case you just want to redownload missing songs instead of getting the latest list from the server.
+In ver 1, everything relied on beatsaver servers. If their servers cchanged or went down, well, so did the entire app. If a song was removed from beatsaver servers, it was gone forever. If a song was on their server but for some reason couldn't be downloaded...gone. There was no backup method in case of failure.
 
-So first decide where to store the data. If you already have  ssms and a local db I'd very much suggest using the database option. If you don't but want to use the db option, suggested, then downloand and install SSMS and make sure the local DB option is checked during install. 
+But now there is! Because my server knows about every song AND downloads a copy of every song, there's a failsafe. If the app can't get the song from beatsaver servers it will now default to using my server as a backup. :D That means we no longer need to rely on their servers. If their server goes dowwn mine can still serve the files and the app still works.
 
-If you want to skip the whole db option then move to the next step.
+## But how do you use it??
 
-1. Launch the app
-2. input the number of songs to download at a time. 50 is the max. If you put anything more the app will override it to 50
-3. click browse and chose a folder to save the songs to
+Well that's really simple. You launch it and then set the only options you can. Then just either download them all OR if you just want to see what songs are new, hit the "Check for new songs" button.
+
+That's it! Very simple. The app will call my server and ask for a list of EVERY song. Then show you the list of new songs. If you only checked for new songs then it will not go any further till you hit the download all button. Otherwise it will move right along and download every song, alerting you of any errors along the way. If a song fails to download it'll show up in the second list.
 
 ### Options
 
 #### Download Song Data
 
-This tells the app to connect to the beat saver servers and grab the latest list of songs. Like...ALL of them. This is time consuming though as the servers have firewalls that limit the number of request the app can make to 90 at a time. Each request gets 10 or 15 (can't remeber) songs. WIth over 20,000 songs available it takes a lot of calls to get the data for all of them.
+This tells the app to connect to my server and grab the list of songs. If you uncheck this (it's checked by default) you are telling the app you ONLY want to check for missing downloads. Aka, you deleted a song file and went OMG! I want it back! In that case you have no need to waste time grabbing ALL the song info from the server as you just want to ensure the songs are already downloaded and reget the missing songs.
 
-So use/check this option when you are wanting to a) get all the songs for the first time ever or b) you want to get the very latest list of songs.
+So use/check this option when you are wanting to 
+a) get all the songs for the first time ever or 
+b) you want to get the very latest list of songs
 
-Do NOT use/check this is you want to simply redownload any missing songs. So if you download all the songs then accidently delete 50 of them from your computer and you want to only get those 50 back, do NOT check this box as it will waist a lot of time getting the server info for all the songs.
-
-#### Save to database
-
-This is that file thing mentioned above. If you don't have ssms installed with the localdb running at the location . (open ssms and connect to .) then you don't want to check this box. Like ever. Because, ya know, you don't have any db server for it to use.
-
-If you do have a local db and you can connect to it using ssms at location . than great! Check the box and all the song data will be saved to the local db under the BeatSaver database.
-
-If you don't check the box the song information will still be saved but just to a json file in your appdata folder.
+Do NOT use/check this is you want to simply redownload any missing songs. So if you download all the songs then accidently delete 50 of them from your computer and you want to only get those 50 back, do NOT check this box as it will waist time getting the song info for all the songs.
 
 
 ### Buttons
@@ -49,13 +47,13 @@ If you just want a list of the songs you don't have downloaded yet then click th
 
 If you checked download song data then this button will download the latest song info from the servers then tell you any songs you don't already have. 
 
-Otherwise, if that is unchecked, it will tell you any songs that are no longer in the folder. It will use the file/db of song information to check your folder and list any songs not found ("new songs").
+Otherwise, if that is unchecked, it will tell you any songs that are no longer in the folder. It will use the local file of song information to check your folder and list any songs not found ("new songs").
 
-If you click this button AND uncheck the download box AND you have never downloaded the song information (clicked download all) then you will get a message saying you can't do that. There's nothing for the app to do as you have no song information and no songs for it to compare to. It needs the song information from the server first. Once you have gotten all the song information at least ONCE , you can hit this button without checking the download data box.
+If you click this button AND uncheck the download box AND you have never downloaded the song information (clicked download all) then you will get a message saying you can't do that. There's nothing for the app to do as you have no song information and no songs for it to compare to. It needs the song information from the server first. Once you have gotten all the song information at least ONCE, you can hit this button without checking the download data box.
 
 ###### Note
 
-This button will save the latest song info to the db/file if the download box is checked.
+This button will save the latest song info to a local file if the download box is checked.
 
 #### Download All
 
@@ -63,7 +61,7 @@ This button does as it says. It downloads the actual songs.
 
 If this is your first time using the app the you MUST have the download box checked. 
 
-If this isn't your first run then you can uncheck the download box. If you do then it will act like the check for new songs button but actually get the songs from the server. It will not get the latest song info, saving you a lot of time, but will check your folder for missing songs that it knows about (aka it will pull the song info from the db/file and use that to find missing songs in your folder). It will then proceed to download those missing songs from the server.
+If this isn't your first run then you can uncheck the download box. If you do then it will act like the check for new songs button but actually get the songs from the server. It will not get the latest song info, saving you a lot of time, but will check your folder for missing songs that it knows about (aka it will pull the song info from the local file and use that to find missing songs in your folder). It will then proceed to download those missing songs from the server.
 
 If you check the download box then it will grab the latest list from the server then proceed to download ONLY the songs you don't already have downloaded.
 
