@@ -3,6 +3,7 @@ using BeatSaberSongDownloader.Server.ExtentionMethods;
 using BeatSaberSongDownloader.Server.Services.SongDownloader;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,10 +19,14 @@ builder.Services.AddDbContext<BeatSaverContext>();
 builder.Services.AddCronJob<SongDownloadService>(c =>
 {
     c.TimeZoneInfo = TimeZoneInfo.Local;
-    c.CronExpression = @"33 14 * * *";
+    c.CronExpression = @"00 08 * * *";
 });
 
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
+builder.Services.AddHttpsRedirection(c =>
+{
+    c.HttpsPort = 44387;
+});
 
 var app = builder.Build();
 

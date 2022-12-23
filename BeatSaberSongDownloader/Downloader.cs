@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using BeatSaberDownloader.Data;
 using BeatSaberSongDownloader.Data.Models.BareModels;
 using Newtonsoft.Json;
 
@@ -30,9 +31,9 @@ namespace BeatSaberSongDownloader
                     {
                         using (var wc = new WebClient())
                         {
-                            wc.Headers.Add(Constants.UserAgentHeaderName, Constants.UserAgentHeaderValue);
-                            wc.Headers.Add(Constants.AcceptLangHeaderName, Constants.AcceptLangHeaderValue);
-                            wc.Headers.Add(Constants.SecFetchHeaderName, Constants.SecFetchHeaderValue);
+                            wc.Headers.Add(Consts.UserAgentHeaderName, Consts.UserAgentHeaderValue);
+                            wc.Headers.Add(Consts.AcceptLangHeaderName, Consts.AcceptLangHeaderValue);
+                            wc.Headers.Add(Consts.SecFetchHeaderName, Consts.SecFetchHeaderValue);
                             wc.DownloadFile(song.BeatSaverDownloadUrl, song.FileName);
                         }
 
@@ -106,13 +107,13 @@ namespace BeatSaberSongDownloader
             foreach (var song in songs) {
                 try
                 {
-                    var ourServerDownloadUrl = $@"{Constants.OurServerBaseDownloadUrl}\{song.Id}";
+                    var ourServerDownloadUrl = $@"{Consts.OurServerBaseDownloadUrl}\{song.Id}";
 
                     using (var wc = new WebClient())
                     {
                         // Add auth guids here to lower rouge requests. yes, I know you can see this but this isnt a super secure app....yet. If people spam my server i'll lock it down
-                        wc.Headers.Add(Constants.AppTokenHeaderName, Constants.AppTokenValue);
-                        wc.Headers.Add(Constants.YoloHoloHeaderName, Constants.YoloHoloHeaderValue);
+                        wc.Headers.Add(Consts.AppTokenHeaderName, Consts.AppTokenValue);
+                        wc.Headers.Add(Consts.YoloHoloHeaderName, Consts.YoloHoloHeaderValue);
                         wc.DownloadFile(ourServerDownloadUrl, song.FileName);
                     }
 
@@ -142,7 +143,7 @@ namespace BeatSaberSongDownloader
                 // Make call to our server to get all the song info
                 using (var client = new HttpClient())
                 {
-                    var response = await client.GetAsync($"https://localhost:7205/api/song/allsongs?basePath={HttpUtility.UrlEncode(basePath)}");
+                    var response = await client.GetAsync($"{Consts.OurServerBaseDownloadUrl}/song/allsongs?basePath={HttpUtility.UrlEncode(basePath)}");
 
                     response.EnsureSuccessStatusCode();
                     var content = await response.Content.ReadAsStringAsync();

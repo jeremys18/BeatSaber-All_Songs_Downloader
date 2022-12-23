@@ -1,4 +1,5 @@
-﻿using BeatSaberDownloader.Data.Repositories;
+﻿using BeatSaberDownloader.Data;
+using BeatSaberDownloader.Data.Repositories;
 using BeatSaberSongDownloader.Server.Services.Base;
 
 namespace BeatSaberSongDownloader.Server.Services.SongDownloader
@@ -15,17 +16,17 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
         }
         public override Task StartAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Song Download Service starts.");
+            _logger.LogInformation("Song Download Service created and awaiting the time to come for it to work work....");
             return base.StartAsync(cancellationToken);
         }
 
         public override async Task<Task> DoWork(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Yo, I got herrrrrrrrrrrrrrrr!!!!");
+            _logger.LogInformation("Song Download Service is running!");
             try
             {
                 // Do everything we did before in the client but now do it in the background :D>-<
-                var downloader = new Downloader();
+                var downloader = new Downloader(_logger);
 
                 // Get current list of songs from their server
                 var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
@@ -34,7 +35,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                 new BeatSaverRepository(_configuration).SaveSongsToDb(latestSongs.docs);
 
                 // Download all the songs
-                await downloader.DownloadAllForRangeAsync(@"D:\BeatSaverSongs", latestSongs.docs);
+                await downloader.DownloadAllForRangeAsync(Consts.SaveFolderPath, latestSongs.docs, true);
             }
             catch (Exception e)
             {

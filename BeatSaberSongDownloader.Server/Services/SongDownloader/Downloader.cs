@@ -10,10 +10,17 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 {
     public class Downloader
     {
+        ILogger<SongDownloadService> _logger;
+
+        public Downloader(ILogger<SongDownloadService> logger)
+        {
+            _logger = logger;
+        }
+
         // Because the server grabs songs from the beat saver servers we use the detailed models here to grab everything we can.
         // We can then return to our client only the basic model so the client only gets what we actually use right now
         // TODO: Add logging to the DB so we can track errors...
-        public async Task DownloadAllForRangeAsync(string songFolderBasePath, List<Song> docs)
+        public async Task DownloadAllForRangeAsync(string songFolderBasePath, List<Song> docs, bool keepGoing)
         {
             var retrySongs = new List<Song>();
             var numberOfExistingSongs = 0;
@@ -42,7 +49,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 
                             if (!File.Exists(fileName))
                             {
-                                // Log here mainWindow.UpdateTextBox($"\nCould not download file {fileName}. Will try again....");
+                                _logger.LogError($"{song.name} failed to download...");
                             }
                         }
                     }
@@ -53,33 +60,35 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                         var code = ((HttpWebResponse)e.Response).StatusCode;
                         if (code == HttpStatusCode.NotFound)
                         {
-                            //mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
-                            //mainWindow.AddSongToErrorList(song);
+                            _logger.LogError($"\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
                         }
                         else if (resp != null && resp.Contains("rate limit"))
                         {
-                            //mainWindow.UpdateTextBox($"\n\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
+                            _logger.LogError($"\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
                             Thread.Sleep(20000);
                             retrySongs.Add(song);
                         }
                         else if (code != HttpStatusCode.Forbidden && e.Status != WebExceptionStatus.ConnectFailure)
                         {
                             retrySongs.Add(song);
-                            //mainWindow.UpdateTextBox($"\n\nError downloading {song.name}. Most likely timed out. Song qued for retry....\n");
+                            _logger.LogError($"\nError downloading {song.name}. Most likely timed out. Song qued for retry....\n");
                         }
                         else
                         {
-                            //mainWindow.UpdateTextBox($"\n\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
-                            //mainWindow.AddSongToErrorList(song);
+                            _logger.LogError($"\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
                         }
                     }
                     verNum++;
                 }
             }
-            if (retrySongs.Count != 0)
+            if (retrySongs.Count != 0 && keepGoing)
             {
-                //mainWindow.UpdateTextBox($"\n{retrySongs.Count} songs failed to download. Retrying to get them now....");
-                await DownloadAllForRangeAsync(songFolderBasePath, retrySongs);
+                _logger.LogInformation($"{retrySongs.Count} songs failed to download. Retrying to get them now....");
+                await DownloadAllForRangeAsync(songFolderBasePath, retrySongs, false);
+            }
+            else if(retrySongs.Count > 0)
+            {
+                _logger.LogInformation($"{retrySongs.Count} songs failed to download, even after retrying.....");
             }
         }
 
@@ -88,7 +97,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             PageResult responce = null;
             foreach (var filter in Consts.FilterOptions)
             {
-                //mainWindow.UpdateTextBox($"\nGetting songs by {filter}....\n\n");
+                _logger.LogInformation($"\nGetting songs by {filter}....");
                 var songData = await GetAllSongInfoAsync(filter);
                 if (responce == null)
                 {
@@ -144,7 +153,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                     if (serverResponse.Code == 5)
                     {
                         int seconds = serverResponse.ResetAfter / 1000 + 1; // Add one to account for less than 1 and rounding
-                        //mainWindow.UpdateTextBox($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i + 1} pages so far....");
+                        _logger.LogError($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i + 1} pages so far....");
                         i--;
                         Thread.Sleep(seconds * 1000);
                     }
