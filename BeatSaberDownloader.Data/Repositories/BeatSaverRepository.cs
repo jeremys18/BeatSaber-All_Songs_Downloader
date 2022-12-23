@@ -60,7 +60,7 @@ namespace BeatSaberDownloader.Data.Repositories
             foreach(var song in songs)
             {
                 var dbSong = context.Songs.FirstOrDefault(x => x.id == song.id);
-                if(song != null)
+                if(dbSong != null)
                 {
                     // Update
                 }

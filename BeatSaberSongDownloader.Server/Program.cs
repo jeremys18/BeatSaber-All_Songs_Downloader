@@ -11,6 +11,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddAuthentication();
+builder.Services.AddDbContext<BeatSaverContext>();
+builder.Services.AddCronJob<SongDownloadService>(c =>
+{
+    c.TimeZoneInfo = TimeZoneInfo.Local;
+    c.CronExpression = @"33 14 * * *";
+});
 
 var app = builder.Build();
 
@@ -20,12 +26,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-builder.Services.AddDbContext<BeatSaverContext>();
-builder.Services.AddCronJob<SongDownloadService>(c =>
-{
-    c.TimeZoneInfo = TimeZoneInfo.Local;
-    c.CronExpression = @"*/5 * * * *";
-});
 
 app.UseHttpsRedirection();
 

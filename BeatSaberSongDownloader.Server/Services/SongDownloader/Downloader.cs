@@ -1,6 +1,7 @@
 ﻿using BeatSaberDownloader.Data;
 using BeatSaberDownloader.Data.Models.BeatSaverSpecific;
 using BeatSaberSongDownloader.Data.Models.DetailedModels;
+using BeatSaberSongDownloader.Server.Comparers;
 using BeatSaberSongDownloader.Server.Handlers;
 using Newtonsoft.Json;
 using System.Net;
@@ -93,7 +94,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                 }
                 else
                 {
-                    var newSongs = songData.docs.Except(responce.docs, new SongComparer());
+                    var newSongs = songData.docs.Except(responce.docs, new SongComparer()); 
                     responce.docs.AddRange(newSongs);
                 }
             }

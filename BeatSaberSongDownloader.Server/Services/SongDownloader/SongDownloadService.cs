@@ -8,7 +8,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
         private readonly ILogger<SongDownloadService> _logger;
         private IConfiguration _configuration;
 
-        protected SongDownloadService(IScheduleConfig<SongDownloadService> config, ILogger<SongDownloadService> logger, IConfiguration configuration) : base(config.CronExpression, config.TimeZoneInfo)
+        public SongDownloadService(IScheduleConfig<SongDownloadService> config, ILogger<SongDownloadService> logger, IConfiguration configuration) : base(config.CronExpression, config.TimeZoneInfo)
         {
             _logger = logger;
             _configuration = configuration;
@@ -21,16 +21,20 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 
         public override async Task<Task> DoWork(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Yo, I got herrrrrrrrrrrrrrrr!!!!");
             try
             {
                 // Do everything we did before in the client but now do it in the background :D>-<
                 var downloader = new Downloader();
+                _logger.LogInformation("Ooo did I sneak past you???????????????????????????????????");
 
                 // Get current list of songs from their server
                 var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
 
                 //upsert entries
                 new BeatSaverRepository(_configuration).SaveSongsToDb(latestSongs.docs);
+
+                // Download all the songs
             }
             catch (Exception e)
             {
