@@ -23,10 +23,6 @@ builder.Services.AddCronJob<SongDownloadService>(c =>
 });
 
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
-builder.Services.AddHttpsRedirection(c =>
-{
-    c.HttpsPort = 44387;
-});
 
 var app = builder.Build();
 
@@ -37,7 +33,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 
