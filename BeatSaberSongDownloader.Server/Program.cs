@@ -8,13 +8,14 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 // Add services to the container.
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddAuthentication();
+//builder.Services.AddAuthentication();
 builder.Services.AddDbContext<BeatSaverContext>();
 builder.Services.AddCronJob<SongDownloadService>(c =>
 {
@@ -23,6 +24,7 @@ builder.Services.AddCronJob<SongDownloadService>(c =>
 });
 
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
+
 
 var app = builder.Build();
 
@@ -33,8 +35,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.Urls.Clear();
+app.Urls.Add("http://0.0.0.0:5000");
 
-app.UseAuthentication();
+//app.UseAuthentication();
 
 app.MapControllers();
 
