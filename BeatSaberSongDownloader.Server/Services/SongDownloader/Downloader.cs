@@ -49,7 +49,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 
                             if (!File.Exists(fileName))
                             {
-                                _logger.LogError($"{song.name} failed to download...");
+                                _logger.LogInformation($"{song.name} failed to download...");
                             }
                         }
                     }
@@ -60,22 +60,22 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                         var code = ((HttpWebResponse)e.Response).StatusCode;
                         if (code == HttpStatusCode.NotFound)
                         {
-                            _logger.LogError($"\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
+                            _logger.LogInformation($"\nServer responded with 404 not found for song {song.name}. Can't download. Skipping song....\n");
                         }
                         else if (resp != null && resp.Contains("rate limit"))
                         {
-                            _logger.LogError($"\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
+                            _logger.LogInformation($"\nServer says you're downlaoding too fast. Will wait 20 seconds then continue....\n");
                             Thread.Sleep(20000);
                             retrySongs.Add(song);
                         }
                         else if (code != HttpStatusCode.Forbidden && e.Status != WebExceptionStatus.ConnectFailure)
                         {
                             retrySongs.Add(song);
-                            _logger.LogError($"\nError downloading {song.name}. Most likely timed out. Song qued for retry....\n");
+                            _logger.LogInformation($"\nError downloading {song.name}. Most likely timed out. Song qued for retry....\n");
                         }
                         else
                         {
-                            _logger.LogError($"\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
+                            _logger.LogInformation($"\nUnknown error downloading {song.name}. Can't download. Skipping song....\n");
                         }
                     }
                     verNum++;
