@@ -32,7 +32,8 @@ namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader
                         Id = song.id,
                         Name = song.name,
                         BeatSaverDownloadUrl = version.downloadURL,
-                        FileName = TextHandler.GetValidFileName(query.SongBasePath, song, verNumber) // May change in future but for now just leave without base path
+                        FileName = TextHandler.GetValidFileName(query.SongBasePath, song, verNumber),
+                        VersionHash = version.hash
                     };
 
                     result.Add(songBasic);

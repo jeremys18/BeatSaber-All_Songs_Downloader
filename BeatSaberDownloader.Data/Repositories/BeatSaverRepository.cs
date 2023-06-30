@@ -15,18 +15,24 @@ namespace BeatSaberDownloader.Data.Repositories
             _context = new BeatSaverContext(configuration);
         }
 
+        public Song GetSongById(string id)
+        {
+            var result = _context.Songs
+                .Include("metadata")
+                .Include("uploader")
+                .Include("versions")
+                .FirstOrDefault(x => x.id == id);
+
+            return result;
+        }
+
         public List<Song> GetAllSongs()
         {
-            var result = new List<Song>();
-
-            using (var context = _context)
-            {
-                result = _context.Songs
+            var result = _context.Songs
                     .Include("metadata")
                     .Include("uploader")
                     .Include("versions")
                     .ToList();
-            }
 
             return result;
         }

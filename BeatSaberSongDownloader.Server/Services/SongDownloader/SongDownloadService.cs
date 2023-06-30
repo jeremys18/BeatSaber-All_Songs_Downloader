@@ -41,6 +41,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             {
                 return Task.FromException(e);
             }
+            _logger.LogInformation("Song Downloader completed this round. Till tomrrow......");
             return Task.CompletedTask;
         }
 

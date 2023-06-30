@@ -56,8 +56,8 @@ namespace BeatSaberSongDownloader
                      
                     if (code == HttpStatusCode.NotFound)
                     {
-                        mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.Name}. Can't download. Skipping song....\n");
-                        mainWindow.AddSongToErrorList(song);
+                        mainWindow.UpdateTextBox($"\n\nServer responded with 404 not found for song {song.Name}. Will try to get our server....\n");
+                        songsToGetFromOurServer.Add(song);
                     }
                     else if (resp != null && resp.Contains("rate limit"))
                     {
@@ -79,7 +79,7 @@ namespace BeatSaberSongDownloader
             }
             if (retrySongs.Count != 0 && continueRetrying)
             {
-                mainWindow.UpdateTextBox($"\n{retrySongs.Count} songs failed to download. Retrying to get them now....");
+                mainWindow.UpdateTextBox($"\n{retrySongs.Count} songs failed to download. Retrying to get them from BeatSaver now....");
                 await DownloadAllForRangeAsync(songFolderBasePath, mainWindow, retrySongs, false);
             }
             else if(retrySongs.Count != 0)
@@ -107,7 +107,7 @@ namespace BeatSaberSongDownloader
             foreach (var song in songs) {
                 try
                 {
-                    var ourServerDownloadUrl = $@"{Consts.OurServerBaseDownloadUrl}\{song.Id}";
+                    var ourServerDownloadUrl = $@"{Consts.OurServerBaseDownloadUrl}\{song.Id}\{song.VersionHash}";
 
                     using (var wc = new WebClient())
                     {
@@ -152,17 +152,11 @@ namespace BeatSaberSongDownloader
             }
             catch (Exception e)
             {
-                mainWindow.UpdateTextBox($"Tried to call our server but ran into error: {e.Message}.....");
+                mainWindow.UpdateTextBox($"/n/nTried to call our server but ran into error: {e.Message}.....");
             }
 
 
             return result;
-        }
-
-        internal async Task<int> GetTotalSongCount()
-        {
-            // call our server to simply get song count
-            return 1;
         }
     }
 }

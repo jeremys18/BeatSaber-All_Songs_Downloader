@@ -2,7 +2,7 @@
 {
     public static class Consts
     {
-        public const string OurServerBaseDownloadUrl = "http://141.193.188.213:5000/api"; 
+        public const string OurServerBaseDownloadUrl = "http://styers.ddns.net:5000/api"; 
         public const string SaveFolderPath = @"G:\BeatSaberSongs";
         public const string DownloadBasePath = "https://beatsaver.com/api/download/key/";
         public const string StatsBasePath = "https://beatsaver.com/api/stats/key/";

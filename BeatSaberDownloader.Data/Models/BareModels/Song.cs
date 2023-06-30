@@ -16,6 +16,8 @@ namespace BeatSaberSongDownloader.Data.Models.BareModels
         // If this URL fails we can default to our server url as a backup but first we need to know their URL
         public string BeatSaverDownloadUrl { get; set; }
 
+        public string VersionHash { get; set; }
+
         public override string ToString()
         {
             return Name;

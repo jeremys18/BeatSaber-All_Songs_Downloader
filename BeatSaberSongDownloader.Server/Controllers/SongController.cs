@@ -1,5 +1,8 @@
-﻿using BeatSaberSongDownloader.Data.Models.BareModels;
+﻿using BeatSaberDownloader.Data;
+using BeatSaberSongDownloader.Data.Models.BareModels;
 using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetAllSongs.Query;
+using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetSong.Query;
+using BeatSaberSongDownloader.Server.Services.SongDownloader;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +13,20 @@ namespace BeatSaberSongDownloader.Server.Controllers
     public class SongController : ControllerBase
     {
         private IMediator _mediator;
+        private ILogger<SongDownloadService> _logger;
 
-        public SongController(IMediator mediator)
+        public SongController(IMediator mediator, ILogger<SongDownloadService> logger)
         {
             _mediator = mediator;
+            _logger = logger;
+        }
+
+        [Route("test")]
+        [HttpGet]
+        public async Task<IActionResult> Test()
+        {
+            await new Downloader(_logger).GetAllSongInfoForAllFiltersAsync();
+            return Ok();
         }
 
         [Route("allsongs")]
@@ -25,12 +38,24 @@ namespace BeatSaberSongDownloader.Server.Controllers
             return Ok(result);
         }
 
-        [Route("{songId}")]
+        [Route("{SongId}/{VersionHash}")]
         [HttpGet]
-        public Song GetSongFile(string songId)
+        public async Task<IActionResult> GetSongFile([FromRoute] GetSongQuery query)
         {
+            if(!Request.Headers.ContainsKey(Consts.AppTokenHeaderName) || Request.Headers[Consts.AppTokenHeaderName] != Consts.AppTokenValue
+                || !Request.Headers.ContainsKey(Consts.YoloHoloHeaderName) || Request.Headers[Consts.YoloHoloHeaderName] != Consts.YoloHoloHeaderValue)
+            {
+                return Unauthorized();
+            }
+
             // return song info for specific song id
-            return new Song { BeatSaverDownloadUrl = "", FileName = "Hola", Id = "1d", Name = "Hola" };
+            var fileContent = await _mediator.Send(query);
+            if(fileContent == null)
+            {
+                return NotFound();
+            }
+
+            return File(fileContent, "application/zip");
         }
     }
 }
