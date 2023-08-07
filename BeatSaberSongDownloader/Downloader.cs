@@ -152,7 +152,7 @@ namespace BeatSaberSongDownloader
             }
             catch (Exception e)
             {
-                mainWindow.UpdateTextBox($"/n/nTried to call our server but ran into error: {e.Message}.....");
+                mainWindow.UpdateTextBox($"\n\nTried to call our server but ran into error: {e.Message}.....");
             }
 
 
