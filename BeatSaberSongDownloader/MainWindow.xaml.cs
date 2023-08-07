@@ -115,6 +115,7 @@ namespace BeatSaberSongDownloader
             if (maxThreads > 50)
             {
                 UpdateTextBox("\nYou entered more than 50 songs at once. To prevent errors and crashes this has automaicatlly been set to 50. Please do not enter more than 50 next time. ");
+                maxThreads = 50;
             }
 
             UpdateTextBox("\nStarting......");
@@ -144,7 +145,8 @@ namespace BeatSaberSongDownloader
                 _songs = FileHelper.GetSongsFromFile();
                 if (_songs == null || _songs.Count == 0)
                 {
-                    UpdateTextBox("\n It seems you don't have the song data downloaded yet and you choose not to download it. So this can't continue. Check to download the song data before continuing....");
+                    UpdateTextBox("\n It seems you don't have the song data downloaded yet and you choose not to download it. So this can't continue. Check the option to download the song data before continuing....");
+                    EnableButtons();
                     return;
                 }
                 UpdateTextBox($"\nGot current songs from local file.....");
@@ -152,6 +154,13 @@ namespace BeatSaberSongDownloader
                 _songs = FileHelper.FindMissingSongFiles(_folderBasePath, _songs, this);
 
                 UpdateTextBox($"\nFound {_songs.Count} songs not downloaded. Will now download all missing songs....");
+            }
+
+            if(_songs.Count == 0)
+            {
+                UpdateTextBox($"\n\nTHERE ARE NO SONGS TO DOWNLOAD!!!!!!!! Either there are no new songs since you last checked OR you failed to uncheck the download option and you really wanted to download your mising files. Uncheck the download option and try again\n\n");
+                EnableButtons();
+                return;
             }
 
             max = _songs.Count;

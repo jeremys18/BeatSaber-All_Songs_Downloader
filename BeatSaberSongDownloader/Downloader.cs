@@ -107,7 +107,7 @@ namespace BeatSaberSongDownloader
             foreach (var song in songs) {
                 try
                 {
-                    var ourServerDownloadUrl = $@"{Consts.OurServerBaseDownloadUrl}\{song.Id}\{song.VersionHash}";
+                    var ourServerDownloadUrl = $@"{Consts.OurServerBaseDownloadUrl}/song/{song.Id}/{song.VersionHash}";
 
                     using (var wc = new WebClient())
                     {
