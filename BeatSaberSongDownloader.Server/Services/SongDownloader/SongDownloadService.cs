@@ -1,6 +1,7 @@
 ﻿using BeatSaberDownloader.Data;
 using BeatSaberDownloader.Data.Repositories;
 using BeatSaberSongDownloader.Server.Services.Base;
+using System.Diagnostics;
 
 namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 {
@@ -22,9 +23,12 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 
         public override async Task<Task> DoWork(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Song Download Service is running!");
+            var sw = new Stopwatch();
+            
+            _logger.LogInformation($"Song Download Service is running! Started at {DateTime.Now.ToShortTimeString}");
             try
             {
+                sw.Start();
                 // Do everything we did before in the client but now do it in the background :D>-<
                 var downloader = new Downloader(_logger);
 
@@ -39,9 +43,14 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             }
             catch (Exception e)
             {
+                _logger.LogInformation($"An error has occured while grabbing the list of song : {e.Message} /n  {e.InnerException?.Message ?? string.Empty}");
                 return Task.FromException(e);
             }
-            _logger.LogInformation("Song Downloader completed this round. Till tomrrow......");
+            finally 
+            { 
+                sw.Stop(); 
+            }
+            _logger.LogInformation($"Song Downloader completed this round at {DateTime.Now.ToShortTimeString()}. It took /n {sw.Elapsed.Hours} hours/n {sw.Elapsed.Minutes} minutes/n {sw.Elapsed.Seconds} seconds/n Till tomrrow......");
             return Task.CompletedTask;
         }
 

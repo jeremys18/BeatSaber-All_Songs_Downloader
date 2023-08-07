@@ -5,6 +5,7 @@ using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.Get
 using BeatSaberSongDownloader.Server.Services.SongDownloader;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BeatSaberSongDownloader.Server.Controllers
 {
@@ -23,10 +24,21 @@ namespace BeatSaberSongDownloader.Server.Controllers
 
         [Route("test")]
         [HttpGet]
-        public async Task<IActionResult> Test()
+        public IActionResult Test()
         {
-            await new Downloader(_logger).GetAllSongInfoForAllFiltersAsync();
-            return Ok();
+            return Ok("Server is running...");
+        }
+
+        [Route("testsong")]
+        [HttpGet]
+        public async Task<IActionResult> TestSong()
+        {
+            var query = new GetSongQuery { 
+                SongId = "2cf84", 
+                VersionHash = "37b0e0b00e5e4a82047a2190ac20747e3016e7ea" 
+            };
+            var fileContent = await _mediator.Send(query);
+            return File(fileContent, "application/zip");
         }
 
         [Route("allsongs")]
