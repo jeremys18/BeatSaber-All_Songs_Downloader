@@ -25,7 +25,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
         {
             var sw = new Stopwatch();
             
-            _logger.LogInformation($"Song Download Service is running! Started at {DateTime.Now.ToShortTimeString}");
+            _logger.LogInformation($"Song Download Service is running! Started at {DateTime.Now.ToShortTimeString()}");
             try
             {
                 sw.Start();
@@ -43,14 +43,14 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             }
             catch (Exception e)
             {
-                _logger.LogInformation($"An error has occured while grabbing the list of song : {e.Message} /n  {e.InnerException?.Message ?? string.Empty}");
+                _logger.LogInformation($"An error has occured while grabbing the list of song : {e.Message} \n  {e.InnerException?.Message ?? string.Empty}");
                 return Task.FromException(e);
             }
             finally 
             { 
                 sw.Stop(); 
             }
-            _logger.LogInformation($"Song Downloader completed this round at {DateTime.Now.ToShortTimeString()}. It took /n {sw.Elapsed.Hours} hours/n {sw.Elapsed.Minutes} minutes/n {sw.Elapsed.Seconds} seconds/n Till tomrrow......");
+            _logger.LogInformation($"Song Downloader completed this round at {DateTime.Now.ToShortTimeString()}. It took \n{sw.Elapsed.Hours} hours\n{sw.Elapsed.Minutes} minutes\n{sw.Elapsed.Seconds} seconds\nTill tomrrow......");
             return Task.CompletedTask;
         }
 

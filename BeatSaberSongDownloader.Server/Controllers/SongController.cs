@@ -29,6 +29,21 @@ namespace BeatSaberSongDownloader.Server.Controllers
             return Ok("Server is running...");
         }
 
+        [Route("testdownload")]
+        [HttpGet]
+        public IActionResult TestD()
+        {
+            try
+            {
+                var songData = new Downloader(_logger).GetAllSongInfoAsync("Relevance");
+            }
+            catch(Exception e){
+
+            }
+            
+            return Ok("Server is running...");
+        }
+
         [Route("testsong")]
         [HttpGet]
         public async Task<IActionResult> TestSong()
