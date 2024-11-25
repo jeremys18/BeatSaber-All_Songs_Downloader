@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Formats.Asn1;
 
 namespace BeatSaberSongDownloader.Data.Models.DetailedModels
 {
@@ -18,6 +19,12 @@ namespace BeatSaberSongDownloader.Data.Models.DetailedModels
         public string createdAt { get; set; }
         public string updatedAt { get; set; }
         public string lastPublishedAt { get; set; }
+        public bool bookmarked { get; set; }
+        // new
+        public string declaredAi { get; set; }
+        public bool blRanked { get; set; }
+        public bool blQualified { get; set; }
+        public virtual List<string> tags { get; set; }
 
         public int uploaderId { get; set; }
         public int metadataId { get; set; }
@@ -28,6 +35,7 @@ namespace BeatSaberSongDownloader.Data.Models.DetailedModels
         public virtual Metadata metadata { get; set; }
         public virtual Stats stats { get; set; }
         public virtual List<Version> versions { get; set; }
+        
 
         public override string ToString()
         {

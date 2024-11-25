@@ -25,6 +25,9 @@ namespace BeatSaberSongDownloader.Data.Models.DetailedModels
         public double seconds { get; set; }
         public int maxScore { get; set; }
 
+        // new
+        public string label { get; set; }
+
         public virtual ParitySummary paritySummary { get; set; }
         public virtual Version Version { get; set; }
     }

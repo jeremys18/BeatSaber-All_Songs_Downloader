@@ -41,6 +41,18 @@ namespace BeatSaberSongDownloader.Server.Controllers
             return File(fileContent, "application/zip");
         }
 
+        [Route("gogogo")]
+        [HttpGet]
+        public async Task<IActionResult> TestGettingSongs()
+        {
+            var downloader = new Downloader(_logger);
+
+            // Get current list of songs from their server
+            var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
+
+            return Ok();
+        }
+
         [Route("allsongs")]
         [HttpGet]
         public async Task<IActionResult> GetAllSongsInfoAsync(string basePath)

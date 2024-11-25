@@ -5,11 +5,13 @@ VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatSaberSongDownloader", "BeatSaberSongDownloader\BeatSaberSongDownloader.csproj", "{9CD941CB-3732-4E1E-94EF-D40DA7D08948}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberSongDownloader.Server", "BeatSaberSongDownloader.Server\BeatSaberSongDownloader.Server.csproj", "{9A044AC1-F0C8-4F48-A994-2B4A0369B992}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatSaberSongDownloader.Server", "BeatSaberSongDownloader.Server\BeatSaberSongDownloader.Server.csproj", "{9A044AC1-F0C8-4F48-A994-2B4A0369B992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeatSaberDownloader.Data", "BeatSaberDownloader.Data\BeatSaberDownloader.Data.csproj", "{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeatSaberDownloader.Data", "BeatSaberDownloader.Data\BeatSaberDownloader.Data.csproj", "{59D02262-D218-4AB7-9CDA-87EC0A5EE7A6}"
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "BeatSaberSongDownloader.DB", "BeatSaberSongDownloader.DB\BeatSaberSongDownloader.DB.sqlproj", "{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestsss", "UnitTestsss\UnitTestsss.csproj", "{F2227F55-20D8-47F1-BECD-D5633F32AC37}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1C3B45C4-8608-4CCC-8BD8-FD06CBC50E18}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{F2227F55-20D8-47F1-BECD-D5633F32AC37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2227F55-20D8-47F1-BECD-D5633F32AC37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2227F55-20D8-47F1-BECD-D5633F32AC37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2227F55-20D8-47F1-BECD-D5633F32AC37}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -149,17 +149,21 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                 }
                 catch (Exception e)
                 {
-                    var serverResponse = JsonConvert.DeserializeObject<BeatSaverServerResponseModel>(json);
-                    if (serverResponse.Code == 5)
+                    BeatSaverServerResponseModel? serverResponse = null;
+                    try
                     {
-                        int seconds = serverResponse.ResetAfter / 1000 + 1; // Add one to account for less than 1 and rounding
-                        _logger.LogError($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i + 1} pages so far....");
-                        i--;
-                        Thread.Sleep(seconds * 1000);
+                        serverResponse = JsonConvert.DeserializeObject<BeatSaverServerResponseModel>(json);
+                        if (serverResponse != null && serverResponse.Code == 5)
+                        {
+                            int seconds = serverResponse.ResetAfter / 1000 + 1; // Add one to account for less than 1 and rounding
+                            _logger.LogError($"\nRate limit Exceeded. Will continue in {seconds} seconds. Got {i + 1} pages so far....");
+                            i--;
+                            Thread.Sleep(seconds * 1000);
+                        }
                     }
-                    else
+                    catch(Exception ee)
                     {
-                        var j = "";
+                        _logger.LogInformation("\nBeatsaver.com returned {Message}\n Program will ignore and continue...", json);
                     }
                 }
             }
