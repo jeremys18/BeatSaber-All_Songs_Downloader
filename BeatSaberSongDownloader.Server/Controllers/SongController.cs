@@ -1,4 +1,5 @@
 ﻿using BeatSaberDownloader.Data;
+using BeatSaberDownloader.Data.Repositories;
 using BeatSaberSongDownloader.Data.Models.BareModels;
 using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetAllSongs.Query;
 using BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetSong.Query;
@@ -15,11 +16,13 @@ namespace BeatSaberSongDownloader.Server.Controllers
     {
         private IMediator _mediator;
         private ILogger<SongDownloadService> _logger;
+        private IConfiguration _configuration;
 
-        public SongController(IMediator mediator, ILogger<SongDownloadService> logger)
+        public SongController(IMediator mediator, ILogger<SongDownloadService> logger,IConfiguration configuration)
         {
             _mediator = mediator;
             _logger = logger;
+            _configuration = configuration;
         }
 
         [Route("test")]
@@ -49,6 +52,8 @@ namespace BeatSaberSongDownloader.Server.Controllers
 
             // Get current list of songs from their server
             var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
+
+            new BeatSaverRepository(_configuration).SaveSongsToDb(latestSongs.docs);
 
             return Ok();
         }

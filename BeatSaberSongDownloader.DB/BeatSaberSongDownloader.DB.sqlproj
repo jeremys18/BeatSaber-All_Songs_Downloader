@@ -67,6 +67,7 @@
     <Build Include="BeatSaver\Tables\Stats.sql" />
     <Build Include="BeatSaver\Tables\Uploader.sql" />
     <Build Include="BeatSaver\Tables\Version.sql" />
+    <Build Include="BeatSaver\Tables\Tag.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="local.publish.xml" />

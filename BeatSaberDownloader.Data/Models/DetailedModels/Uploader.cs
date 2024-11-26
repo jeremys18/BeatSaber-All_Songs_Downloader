@@ -14,8 +14,7 @@ namespace BeatSaberSongDownloader.Data.Models.DetailedModels
         public string type { get; set; }
         public bool admin { get; set; }
         public bool curator { get; set; }
-        // new
         public bool seniorCurator { get; set; }
-        public bool playlistUrl { get; set; }
+        public string playlistUrl { get; set; }
     }
 }

@@ -16,7 +16,9 @@
     [cinema] BIT NOT NULL, 
     [seconds] DECIMAL(18, 6) NOT NULL, 
     [maxScore] INT NOT NULL,
+	[label] nvarchar(max),
 	[paritySummaryId] INT NOT NULL,
+	[environment] nvarchar(100) null,
 	[versionid] int not null,
 	
 	constraint diff_parity foreign key (paritySummaryId) references dbo.ParitySummary(Id),

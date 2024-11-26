@@ -1,4 +1,5 @@
 ﻿using BeatSaberDownloader.Data;
+using BeatSaberDownloader.Data.JsonConverters;
 using BeatSaberDownloader.Data.Models.BeatSaverSpecific;
 using BeatSaberSongDownloader.Data.Models.DetailedModels;
 using BeatSaberSongDownloader.Server.Comparers;
@@ -11,10 +12,13 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
     public class Downloader
     {
         ILogger<SongDownloadService> _logger;
+        JsonSerializerSettings serializeOptions = new JsonSerializerSettings();
 
         public Downloader(ILogger<SongDownloadService> logger)
         {
             _logger = logger;
+            
+            serializeOptions.Converters.Add(new TagConverter());
         }
 
         // Because the server grabs songs from the beat saver servers we use the detailed models here to grab everything we can.
@@ -124,7 +128,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             var urlToUse = new Uri($"https://beatsaver.com/api/search/text/0?sortOrder={filterValue}", UriKind.Absolute);
             var response = await client.SendAsync(new HttpRequestMessage(HttpMethod.Get, urlToUse)).ConfigureAwait(false);
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            var info = JsonConvert.DeserializeObject<PageResult>(json);
+            var info = JsonConvert.DeserializeObject<PageResult>(json, serializeOptions);
             var keepgoing = true;
 
             for (int i = 1; keepgoing; i++)
@@ -134,7 +138,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
                     var urlToUseNow = new Uri($"https://beatsaver.com/api/search/text/{i}?sortOrder={filterValue}", UriKind.Absolute);
                     response = await client.GetAsync(urlToUseNow);
                     json = await response.Content.ReadAsStringAsync();
-                    var info2 = JsonConvert.DeserializeObject<PageResult>(json);
+                    var info2 = JsonConvert.DeserializeObject<PageResult>(json, serializeOptions);
                     if (info2.docs == null || info2.docs.Count == 0)
                     {
                         // we've reached the end of the list so stop the loop
