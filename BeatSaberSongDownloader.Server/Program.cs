@@ -1,3 +1,4 @@
+using BeatSaberDownloader.Data;
 using BeatSaberDownloader.Data.DBContext;
 using BeatSaberSongDownloader.Server.ExtentionMethods;
 using BeatSaberSongDownloader.Server.Services.SongDownloader;
@@ -13,6 +14,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddAuthentication();
@@ -24,7 +27,8 @@ builder.Services.AddCronJob<SongDownloadService>(c =>
 });
 
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
-
+builder.Services.AddLogging(x => x.AddConsole());
+builder.Services.AddTransient<StupidLogger>();
 
 var app = builder.Build();
 

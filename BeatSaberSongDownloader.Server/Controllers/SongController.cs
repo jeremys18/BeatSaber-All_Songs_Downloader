@@ -15,10 +15,10 @@ namespace BeatSaberSongDownloader.Server.Controllers
     public class SongController : ControllerBase
     {
         private IMediator _mediator;
-        private ILogger<SongDownloadService> _logger;
+        private ILogger<StupidLogger> _logger;
         private IConfiguration _configuration;
 
-        public SongController(IMediator mediator, ILogger<SongDownloadService> logger,IConfiguration configuration)
+        public SongController(IMediator mediator, ILogger<StupidLogger> logger,IConfiguration configuration)
         {
             _mediator = mediator;
             _logger = logger;
@@ -53,7 +53,7 @@ namespace BeatSaberSongDownloader.Server.Controllers
             // Get current list of songs from their server
             var latestSongs = await downloader.GetAllSongInfoForAllFiltersAsync();
 
-            new BeatSaverRepository(_configuration).SaveSongsToDb(latestSongs.docs);
+            new BeatSaverRepository(_configuration, _logger).SaveSongsToDb(latestSongs.docs);
 
             return Ok();
         }

@@ -1,6 +1,8 @@
-﻿using BeatSaberDownloader.Data.Repositories;
+﻿using BeatSaberDownloader.Data;
+using BeatSaberDownloader.Data.Repositories;
 using BeatSaberSongDownloader.Data.Models.BareModels;
 using BeatSaberSongDownloader.Server.Handlers;
+using BeatSaberSongDownloader.Server.Services.SongDownloader;
 using MediatR;
 
 namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader.GetAllSongs.Query
@@ -8,9 +10,11 @@ namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader
     public class GetAllSongsQueryHandler : IRequestHandler<GetAllSongsQuery, List<Song>>
     {
         private IConfiguration _configuration;
-        public GetAllSongsQueryHandler(IConfiguration configuration)
+        ILogger<StupidLogger> _logger;
+        public GetAllSongsQueryHandler(IConfiguration configuration, ILogger<StupidLogger> logger)
         {
             _configuration= configuration;
+            _logger= logger;
         }
 
         public async Task<List<Song>> Handle(GetAllSongsQuery query, CancellationToken cancellationToken)
@@ -19,7 +23,7 @@ namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader
             var result = new List<Song>();
 
             // Get all songs info
-            var songInfo = new BeatSaverRepository(_configuration).GetAllSongs();
+            var songInfo = new BeatSaverRepository(_configuration, _logger).GetAllSongs();
 
             //Convert to basic model
             foreach (var song in songInfo)

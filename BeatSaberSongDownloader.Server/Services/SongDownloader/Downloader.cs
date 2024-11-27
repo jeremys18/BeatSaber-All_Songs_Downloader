@@ -11,10 +11,10 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
 {
     public class Downloader
     {
-        ILogger<SongDownloadService> _logger;
+        ILogger<StupidLogger> _logger;
         JsonSerializerSettings serializeOptions = new JsonSerializerSettings();
 
-        public Downloader(ILogger<SongDownloadService> logger)
+        public Downloader(ILogger<StupidLogger> logger)
         {
             _logger = logger;
             

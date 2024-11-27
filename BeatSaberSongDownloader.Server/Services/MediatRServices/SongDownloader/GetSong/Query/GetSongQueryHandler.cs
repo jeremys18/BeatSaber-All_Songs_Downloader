@@ -8,10 +8,12 @@ namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader
     public class GetSongQueryHandler : IRequestHandler<GetSongQuery, byte[]?>
     {
         private IConfiguration _configuration;
+        private ILogger<StupidLogger> _logger;
 
-        public GetSongQueryHandler(IConfiguration configuration)
+        public GetSongQueryHandler(IConfiguration configuration, ILogger<StupidLogger> logger)
         {
             _configuration= configuration;
+            _logger = logger;
         }
 
         public async Task<byte[]?> Handle(GetSongQuery query, CancellationToken cancellationToken)
@@ -19,7 +21,7 @@ namespace BeatSaberSongDownloader.Server.Services.MediatRServices.SongDownloader
             byte[]? result;
             try
             {
-                var songInfo = new BeatSaverRepository(_configuration).GetSongById(query.SongId);
+                var songInfo = new BeatSaverRepository(_configuration, _logger).GetSongById(query.SongId);
                 var verNumber = songInfo.versions.IndexOf(songInfo.versions.First(y => y.hash == query.VersionHash)) + 1;
                 var fileName = TextHandler.GetValidFileName(Consts.SaveFolderPath, songInfo, verNumber);
                 result = await File.ReadAllBytesAsync(fileName);

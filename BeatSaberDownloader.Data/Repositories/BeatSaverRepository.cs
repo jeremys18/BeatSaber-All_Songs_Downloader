@@ -2,6 +2,7 @@
 using BeatSaberSongDownloader.Data.Models.DetailedModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace BeatSaberDownloader.Data.Repositories
 {
@@ -9,10 +10,12 @@ namespace BeatSaberDownloader.Data.Repositories
     {
         private bool isDisposed;
         private BeatSaverContext _context;
+        private readonly ILogger _logger;
 
-        public BeatSaverRepository(IConfiguration configuration)
+        public BeatSaverRepository(IConfiguration configuration, ILogger<StupidLogger> logger)
         {
             _context = new BeatSaverContext(configuration);
+            _logger = logger;
         }
 
         public Song GetSongById(string id)
@@ -64,18 +67,61 @@ namespace BeatSaberDownloader.Data.Repositories
         {
             foreach(var song in songs)
             {
-                var dbSong = context.Songs.FirstOrDefault(x => x.id == song.id);
-                if(dbSong != null)
+                try
                 {
-                    // Update
+                    var dbSong = context.Songs.FirstOrDefault(x => x.id == song.id);
+                    if (dbSong != null)
+                    {
+                        dbSong.description = song.description;
+                        dbSong.name = song.name;
+                        dbSong.stats.plays = song.stats.plays;
+                        dbSong.stats.downVotes = song.stats.downVotes;
+                        dbSong.stats.downloads = song.stats.downloads;
+                        dbSong.stats.upVotes = song.stats.upVotes;
+                        dbSong.stats.score = song.stats.score;
+                        dbSong.qualified = song.qualified;
+                        dbSong.ranked = song.ranked;
+                        dbSong.updatedAt = song.updatedAt;
+                        dbSong.lastPublishedAt = song.lastPublishedAt;
+                        if (dbSong.tags != null)
+                        {
+                            foreach (var s in dbSong.tags)
+                            {
+                                var ss = song.tags?.FirstOrDefault(x => x.Name == s.Name);
+                                if (ss == null)
+                                {
+                                    dbSong.tags.Remove(s);
+                                }
+                            }
+                        }
+                        if (song.tags != null)
+                        {
+                            foreach (var s in song.tags)
+                            {
+                                var ss = dbSong.tags?.FirstOrDefault(x => x.Name == s.Name);
+                                if (ss == null)
+                                {
+                                    dbSong.tags.Add(new Models.DetailedModels.Tag
+                                    {
+                                        Name = s.Name,
+                                        SongId = dbSong.SongId
+                                    });
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // ensure the uploader is correct as uploaders can upload many songs
+                        var dbUploader = context.Uploaders.FirstOrDefault(x => x.id == song.uploader.id);
+                        song.uploader = dbUploader ?? song.uploader;
+                        context.Songs.Add(song);
+                    }
                 }
-                else
+                catch(Exception e)
                 {
-                    // ensure the uploader is correct as uploaders can upload many songs
-                    var dbUploader = context.Uploaders.FirstOrDefault(x => x.id == song.uploader.id);
-                    song.uploader = dbUploader ?? song.uploader;
-                    context.Songs.Add(song);
-                }
+                    _logger.LogError("Song {Songnaem} could not be saved. {Message}\n {Stack}", song.name, e.Message, e.StackTrace);
+                } 
             }
         }
 
