@@ -69,7 +69,7 @@ namespace BeatSaberDownloader.Data.Repositories
             {
                 try
                 {
-                    var dbSong = context.Songs.FirstOrDefault(x => x.id == song.id);
+                    var dbSong = context.Songs.Where(x => x.id == song.id).Include(y => y.tags).Include(y => y.stats).FirstOrDefault();
                     if (dbSong != null)
                     {
                         dbSong.description = song.description;
@@ -117,6 +117,7 @@ namespace BeatSaberDownloader.Data.Repositories
                         song.uploader = dbUploader ?? song.uploader;
                         context.Songs.Add(song);
                     }
+                    context.SaveChanges(); // save now so the uploader isn't duplicated!
                 }
                 catch(Exception e)
                 {
