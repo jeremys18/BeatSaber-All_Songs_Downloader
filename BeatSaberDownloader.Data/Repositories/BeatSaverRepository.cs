@@ -1,4 +1,5 @@
 ﻿using BeatSaberDownloader.Data.DBContext;
+using BeatSaberDownloader.Data.Models.DetailedModels;
 using BeatSaberSongDownloader.Data.Models.DetailedModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -83,16 +84,10 @@ namespace BeatSaberDownloader.Data.Repositories
                         dbSong.ranked = song.ranked;
                         dbSong.updatedAt = song.updatedAt;
                         dbSong.lastPublishedAt = song.lastPublishedAt;
-                        if (dbSong.tags != null)
+                        if (dbSong.tags != null && song.tags != null)
                         {
-                            foreach (var s in dbSong.tags)
-                            {
-                                var ss = song.tags?.FirstOrDefault(x => x.Name == s.Name);
-                                if (ss == null)
-                                {
-                                    dbSong.tags.Remove(s);
-                                }
-                            }
+                            var ss = dbSong.tags.ExceptBy(song.tags.Select(y=> y.Name), x => x.Name).Select(z => z.Name).ToList();
+                            dbSong.tags.RemoveAll(x =>ss.Contains(x.Name));
                         }
                         if (song.tags != null)
                         {

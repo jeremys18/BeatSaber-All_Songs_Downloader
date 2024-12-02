@@ -4,7 +4,7 @@
 	[songSubName] [nvarchar](max) NOT NULL,
 	[songAuthorName] [nvarchar](max) NOT NULL,
 	[levelAuthorName] [nvarchar](max) NOT NULL,
-	[bpm] [decimal](6, 2) NOT NULL,
+	[bpm] FLOAT NOT NULL,
 	[duration] [int] NOT NULL,
  CONSTRAINT [PK_Metadata] PRIMARY KEY CLUSTERED 
 (
