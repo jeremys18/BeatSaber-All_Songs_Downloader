@@ -56,7 +56,7 @@ namespace BeatSaberSongDownloader.Server.Services.SongDownloader
             { 
                 sw.Stop(); 
             }
-            _logger.LogInformation($"Song Downloader completed this round at {DateTime.Now.ToShortTimeString()}. It took /n {sw.Elapsed.Hours} hours/n {sw.Elapsed.Minutes} minutes/n {sw.Elapsed.Seconds} seconds/n Till tomrrow......");
+            _logger.LogInformation($"Song Downloader completed this round at {DateTime.Now.ToShortTimeString()}. It took \n {sw.Elapsed.Hours} hours\n {sw.Elapsed.Minutes} minutes\n {sw.Elapsed.Seconds} seconds\n Till tomrrow......");
             return Task.CompletedTask;
         }
 
