@@ -17,11 +17,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //builder.Services.AddAuthentication();
 builder.Services.AddDbContext<BeatSaverContext>();
-builder.Services.AddCronJob<SongDownloadService>(c =>
-{
-    c.TimeZoneInfo = TimeZoneInfo.Local;
-    c.CronExpression = @"00 08 * * *";
-});
+//builder.Services.AddCronJob<SongDownloadService>(c =>
+//{
+//    c.TimeZoneInfo = TimeZoneInfo.Local;
+//    c.CronExpression = @"00 08 * * *";
+//});
 
 builder.Services.AddMediatR(typeof(Program).GetTypeInfo().Assembly);
 
